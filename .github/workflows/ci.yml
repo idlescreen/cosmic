@@ -1,4 +1,4 @@
-# CI for idlescreen/idle-cosmic (COSMIC panel applet)
+# CI for idlescreen/app-cosmic (COSMIC panel applet)
 name: CI
 
 on:

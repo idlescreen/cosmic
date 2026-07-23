@@ -1,5 +1,8 @@
 # IdleScreen Applet
 
+COSMIC **platform app** for [IdleScreen](https://github.com/idlescreen/idle-core). Ships the panel applet; a metapackage (via [packages](https://github.com/idlescreen/packages)) should pull `idle-core` (+ CLI), official `saver-*` effects, and this applet. Optional: [idle-tui](https://github.com/idlescreen/idle-tui).
+
+
 Optional COSMIC Desktop panel applet for [IdleScreen](https://github.com/idlescreen),
 the Wayland-native idle screen and ambient display daemon for Linux.
 
@@ -10,7 +13,7 @@ the Wayland-native idle screen and ambient display daemon for Linux.
 | Brand | [idlescreen/brand](https://github.com/idlescreen/idle-brand) |
 | Org | [idlescreen](https://github.com/idlescreen) |
 
-[![CI](https://github.com/idlescreen/idle-cosmic/actions/workflows/ci.yml/badge.svg)](https://github.com/idlescreen/idle-cosmic/actions/workflows/ci.yml)
+[![CI](https://github.com/idlescreen/app-cosmic/actions/workflows/ci.yml/badge.svg)](https://github.com/idlescreen/app-cosmic/actions/workflows/ci.yml)
 
 Not required for GNOME, KDE, Hyprland, or other desktops. Use the CLI and TUI
 from the core package there. The shipped package and binary name remain
@@ -36,8 +39,8 @@ Requires a sibling checkout of the core daemon (path dependencies):
 
 ```bash
 git clone https://github.com/idlescreen/idle-core.git
-git clone https://github.com/idlescreen/idle-cosmic.git
-cd idle-cosmic
+git clone https://github.com/idlescreen/app-cosmic.git
+cd app-cosmic
 cargo build --release
 ```
 
