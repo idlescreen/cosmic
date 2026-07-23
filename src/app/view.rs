@@ -108,7 +108,7 @@ impl AppModel {
             self.local_config.render_scale,
             Message::ChangeRenderScale,
         )
-        .step(0.05);
+        .step(0.05_f32);
 
         let scale_adjuster = cosmic::iced::widget::Row::new()
             .spacing(8)
