@@ -2,11 +2,19 @@
 <component type="desktop-application">
   <id>com.system76.CosmicApplet.Trance</id>
   <metadata_license>CC0-1.0</metadata_license>
-  <project_license>MIT</project_license>
-  <name>Trance</name>
-  <summary>Screensaver applet for COSMIC</summary>
+  <project_license>Apache-2.0</project_license>
+  <name>IdleScreen</name>
+  <summary>IdleScreen screensaver applet for COSMIC</summary>
+  <description>
+    <p>
+      Optional COSMIC Desktop panel applet for the IdleScreen (trance) Wayland
+      idle and ambient screensaver daemon. Toggle the user service, idle
+      activation, timeout, render scale, FPS overlay, and preview plugins.
+    </p>
+  </description>
   <icon type="stock">display-symbolic</icon>
-  <url type="vcs-browser">https://github.com/idlescreen/idlescreen</url>
+  <url type="vcs-browser">https://github.com/idlescreen/idlescreen-applet</url>
+  <url type="homepage">https://github.com/idlescreen</url>
   <launchable type="desktop-id">com.system76.CosmicApplet.Trance.desktop</launchable>
   <provides>
     <id>com.system76.CosmicApplet</id>
@@ -27,6 +35,8 @@
   </categories>
   <keywords>
     <keyword>COSMIC</keyword>
+    <keyword>IdleScreen</keyword>
+    <keyword>screensaver</keyword>
   </keywords>
   <content_rating type="oars-1.1" />
 </component>

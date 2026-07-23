@@ -68,10 +68,7 @@ impl ThemeConfig {
             return;
         };
         let key = line[..idx].trim();
-        let val = line[idx + 1..]
-            .trim()
-            .trim_matches('"')
-            .trim_matches('\'');
+        let val = line[idx + 1..].trim().trim_matches('"').trim_matches('\'');
         match key {
             "accent_color" => {
                 config.accent_color = val.to_string();

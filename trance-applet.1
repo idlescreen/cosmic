@@ -1,10 +1,20 @@
-.TH TRANCE-APPLET 1 "June 2026" "trance" "Trance Screensaver COSMIC Applet"
+.TH TRANCE-APPLET 1 "July 2026" "IdleScreen" "IdleScreen COSMIC Applet"
 .SH NAME
-trance-applet \- COSMIC panel applet for managing the trance screensaver daemon
+trance-applet \- COSMIC panel applet for managing the IdleScreen (trance) screensaver daemon
 .SH SYNOPSIS
 .B trance-applet
 .SH DESCRIPTION
 .B trance-applet
-is the System76 COSMIC Desktop panel applet for the trance screensaver. It runs as part of the cosmic-panel and displays status in the tray, allowing users to toggle screensaver states and launch settings.
+is the System76 COSMIC Desktop panel applet for IdleScreen (package name
+.BR trance ).
+It runs as part of cosmic-panel and displays status in the tray, allowing users
+to toggle the daemon user service, idle activation, timeout, render scale, FPS
+overlay, select plugins, and preview savers.
+.SH SEE ALSO
+.BR trance-daemon (1),
+.BR trance-cli (1),
+.BR trance-tui (1)
 .SH AUTHOR
-crateria <jerydleuck@gmail.com>
+IdleScreen <jerydleuck@gmail.com>
+.SH BUGS
+Report security issues via private vulnerability reporting on the GitHub repository.

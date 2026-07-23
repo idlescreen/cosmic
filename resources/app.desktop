@@ -1,13 +1,13 @@
 [Desktop Entry]
-Name=Trance
-Comment=Screensaver applet for COSMIC
+Name=IdleScreen
+Comment=IdleScreen screensaver applet for COSMIC
 Type=Application
 Icon=display-symbolic
 Exec=trance-applet %F
 Terminal=false
 StartupNotify=true
 Categories=COSMIC;System;Settings;
-Keywords=COSMIC
+Keywords=COSMIC;IdleScreen;screensaver;
 NoDisplay=true
 X-CosmicApplet=true
 X-CosmicHoverPopup=Auto
