@@ -1,4 +1,5 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: Apache-2.0
+// Copyright 2026 IdleScreen
 
 use cosmic::iced::window::Id;
 use cosmic::widget;
@@ -74,7 +75,7 @@ impl AppModel {
         let mut header_row = cosmic::iced::widget::Row::new()
             .spacing(8)
             .align_y(cosmic::iced::Alignment::Center)
-            .push(widget::text("Trance Screensaver").size(16));
+            .push(widget::text("IdleScreen").size(16));
 
         if on_battery {
             header_row = header_row.push(widget::text("(Battery · 30 FPS)").size(11));
@@ -179,4 +180,16 @@ fn display_saver_name(raw: &str) -> String {
         }
     }
     out
+}
+
+#[cfg(test)]
+mod tests {
+    use super::display_saver_name;
+
+    #[test]
+    fn title_cases_savers() {
+        assert_eq!(display_saver_name("beams"), "Beams");
+        assert_eq!(display_saver_name("random"), "Random");
+        assert_eq!(display_saver_name("my_cool-saver"), "My Cool Saver");
+    }
 }

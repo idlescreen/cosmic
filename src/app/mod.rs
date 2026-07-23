@@ -1,6 +1,7 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: Apache-2.0
+// Copyright 2026 IdleScreen
 
-//! COSMIC panel applet for trance screensaver configuration.
+//! COSMIC panel applet for IdleScreen (trance) screensaver configuration.
 
 mod message;
 mod state;
