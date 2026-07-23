@@ -6,7 +6,7 @@ the Wayland-native idle screen and ambient display daemon for Linux.
 | | |
 |---|---|
 | Core | [idlescreen/idlescreen](https://github.com/idlescreen/idle-core) |
-| Packages | [idlescreen.github.io/idle-packages](https://idlescreen.github.io/idle-packages/) |
+| Packages | [idlescreen.github.io/packages](https://idlescreen.github.io/packages/) |
 | Brand | [idlescreen/brand](https://github.com/idlescreen/idle-brand) |
 | Org | [idlescreen](https://github.com/idlescreen) |
 
@@ -28,7 +28,7 @@ sudo apt install trance trance-applet
 sudo dnf install trance trance-applet
 ```
 
-Index: [idlescreen.github.io/idle-packages](https://idlescreen.github.io/idle-packages/)
+Index: [idlescreen.github.io/packages](https://idlescreen.github.io/packages/)
 
 ## Build from source
 
