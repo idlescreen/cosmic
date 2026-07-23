@@ -1,4 +1,4 @@
-# CI for idlescreen/idlescreen-applet (COSMIC panel applet)
+# CI for idlescreen/idle-cosmic (COSMIC panel applet)
 name: CI
 
 on:
@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Checkout IdleScreen core (path deps)
-        run: git clone --depth 1 https://github.com/idlescreen/idlescreen.git ../idlescreen
+        run: git clone --depth 1 https://github.com/idlescreen/idle-core.git ../idlescreen
 
       - name: System deps
         run: |
