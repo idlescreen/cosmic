@@ -67,7 +67,7 @@ impl AppModel {
         // Limit the plugin list container height and make it scrollable to avoid pop-up overflow
         let scrollable_grid = cosmic::iced::widget::scrollable(grid).height(130.0);
 
-        let on_battery = trance_runner::toolkit::sys_info::get_system_info()
+        let on_battery = idle_runner::toolkit::sys_info::get_system_info()
             .power_status
             .contains("Battery");
 

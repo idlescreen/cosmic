@@ -2525,6 +2525,68 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b9e0384b61958566e926dc50660321d12159025e767c18e043daf26b70104c39"
 
 [[package]]
+name = "idle-api"
+version = "2.3.0"
+dependencies = [
+ "bytemuck",
+]
+
+[[package]]
+name = "idle-applet"
+version = "2.1.1"
+dependencies = [
+ "anyhow",
+ "i18n-embed",
+ "i18n-embed-fl",
+ "idle-dbus",
+ "idle-runner",
+ "libc",
+ "libcosmic",
+ "rust-embed",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "idle-dbus"
+version = "0.4.0"
+dependencies = [
+ "tracing",
+ "zbus",
+]
+
+[[package]]
+name = "idle-runner"
+version = "2.3.0"
+dependencies = [
+ "bytemuck",
+ "crossterm",
+ "fontdue",
+ "futures-lite",
+ "idle-api",
+ "idle-upscaler",
+ "landlock",
+ "libc",
+ "libloading 0.9.0",
+ "notify",
+ "sysinfo",
+ "thiserror 2.0.19",
+ "tracing",
+ "tracing-subscriber",
+ "wgpu",
+]
+
+[[package]]
+name = "idle-upscaler"
+version = "0.4.0"
+dependencies = [
+ "bytemuck",
+ "idle-api",
+ "tracing",
+]
+
+[[package]]
 name = "idna"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5152,68 +5214,6 @@ dependencies = [
  "tracing-core",
  "tracing-log",
  "tracing-serde",
-]
-
-[[package]]
-name = "trance-api"
-version = "1.0.27"
-dependencies = [
- "bytemuck",
-]
-
-[[package]]
-name = "trance-applet"
-version = "1.0.29"
-dependencies = [
- "anyhow",
- "i18n-embed",
- "i18n-embed-fl",
- "libc",
- "libcosmic",
- "rust-embed",
- "tokio",
- "tracing",
- "tracing-subscriber",
- "trance-dbus",
- "trance-runner",
-]
-
-[[package]]
-name = "trance-dbus"
-version = "0.3.62"
-dependencies = [
- "tracing",
- "zbus",
-]
-
-[[package]]
-name = "trance-runner"
-version = "1.0.27"
-dependencies = [
- "bytemuck",
- "crossterm",
- "fontdue",
- "futures-lite",
- "landlock",
- "libc",
- "libloading 0.9.0",
- "notify",
- "sysinfo",
- "thiserror 2.0.19",
- "tracing",
- "tracing-subscriber",
- "trance-api",
- "trance-upscaler",
- "wgpu",
-]
-
-[[package]]
-name = "trance-upscaler"
-version = "0.3.61"
-dependencies = [
- "bytemuck",
- "tracing",
- "trance-api",
 ]
 
 [[package]]

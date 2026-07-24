@@ -1,6 +1,6 @@
 [package]
-name = "trance-applet"
-version = "2.1.0"
+name = "idle-applet"
+version = "2.1.1"
 edition = "2024"
 license = "Apache-2.0"
 description = "IdleScreen for COSMIC — product package (applet + pulls daemon and all savers)"
@@ -21,8 +21,8 @@ i18n-embed-fl = "0.10"
 rust-embed = "8.11"
 tokio = { version = "1.52", features = ["full"] }
 libc = "0.2"
-trance-dbus = { path = "../idle/crates/trance-dbus" }
-trance-runner = { path = "../idle/trance-runner" }
+idle-dbus = { path = "../idle/crates/idle-dbus" }
+idle-runner = { path = "../idle/idle-runner" }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
 

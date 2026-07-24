@@ -8,7 +8,7 @@ use std::thread;
 use std::time::Duration;
 
 use anyhow::{Context, Result, bail};
-use trance_dbus::{DaemonStatus, TranceClient, daemon_available};
+use idle_dbus::{DaemonStatus, TranceClient, daemon_available};
 
 pub fn is_running() -> bool {
     daemon_available()

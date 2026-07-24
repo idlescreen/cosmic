@@ -179,7 +179,7 @@ impl AppModel {
                 })
                 .unwrap_or_default(),
             local_config: crate::config::ThemeConfig::load(),
-            screensavers: trance_runner::discovery::detect_screensavers(),
+            screensavers: idle_runner::discovery::detect_screensavers(),
             daemon_running: false,
             gpu_enabled: false,
             show_fps_overlay: false,

@@ -28,7 +28,7 @@ impl AppModel {
             }
         } else {
             self.local_config = ThemeConfig::load();
-            self.screensavers = trance_runner::discovery::detect_screensavers();
+            self.screensavers = idle_runner::discovery::detect_screensavers();
             self.gpu_enabled = false;
             self.show_fps_overlay = self.local_config.show_fps_overlay;
         }
