@@ -1,73 +1,34 @@
-# app-cosmic — IdleScreen for COSMIC
+# idle-cosmic
 
-COSMIC **product package** for [IdleScreen](https://github.com/idlescreen/idle-core).
+IdleScreen **product package** for [COSMIC Desktop](https://system76.com/cosmic).
+
+```bash
+sudo dnf install idle-cosmic
+# or
+sudo apt install idle-cosmic
+```
+
+## What it installs
+
+```text
+idle-cosmic
+├── COSMIC panel applet
+├── Requires: idle            # daemon (idle-core)
+└── Requires: idle-savers     # every idle-saver-*
+```
+
+Optional recommends: `idle-cli` (command **`idle`**), `idle-tui`.
 
 | | |
 |---|---|
-| Core (daemon) | [idlescreen/idle-core](https://github.com/idlescreen/idle-core) → package **`idlescreen`** |
-| Packages host | [idlescreen.github.io/packages](https://idlescreen.github.io/packages/) |
-| Brand | [idlescreen/brand](https://github.com/idlescreen/brand) |
-| Org | [idlescreen](https://github.com/idlescreen) |
-
-[![CI](https://github.com/idlescreen/app-cosmic/actions/workflows/ci.yml/badge.svg)](https://github.com/idlescreen/app-cosmic/actions/workflows/ci.yml)
-
-## What `app-cosmic` installs
-
-```text
-app-cosmic
-├── this package          → COSMIC panel applet (idlescreen-applet binary)
-├── Requires: idlescreen  → idle-core daemon + user service
-└── Requires: idlescreen-savers
-    └── every official saver-* plugin
-```
-
-Optional (recommends): `idlescreen-cli`, `app-tui`.
-
-Not needed on GNOME/KDE/Hyprland — use `idlescreen` + `idlescreen-cli` there.
-
-## Install
-
-After adding the IdleScreen package repository:
+| Core | [idle-core](https://github.com/idlescreen/idle-core) |
+| Packages | [idlescreen.github.io/packages](https://idlescreen.github.io/packages/) |
 
 ```bash
-# Fedora
-sudo curl -fsSL https://idlescreen.github.io/packages/rpm/crateria.repo \
-  -o /etc/yum.repos.d/idlescreen.repo
-sudo dnf install app-cosmic
-
-# Debian / Ubuntu / Pop!_OS (COSMIC)
-sudo apt install app-cosmic
+systemctl --user enable --now idle-daemon
+idle status
 ```
-
-Then:
-
-```bash
-systemctl --user enable --now idlescreen-daemon
-idlescreen status   # if idlescreen-cli was pulled in
-```
-
-Add the **IdleScreen** applet in COSMIC panel settings if it does not appear automatically.
-
-Index: [idlescreen.github.io/packages](https://idlescreen.github.io/packages/)
-
-## Build from source
-
-Requires a sibling checkout of idle-core (path dependencies):
-
-```bash
-git clone https://github.com/idlescreen/idle-core.git
-git clone https://github.com/idlescreen/app-cosmic.git
-cd app-cosmic
-cargo build --release
-```
-
-| Path dependency | Location |
-|-----------------|----------|
-| `trance-dbus` | `../idle-core/crates/trance-dbus` |
-| `trance-runner` | `../idle-core/trance-runner` |
-
-System dependencies (Debian/Ubuntu): `libdbus-1-dev libwayland-dev libxkbcommon-dev libssl-dev libegl1-mesa-dev libgl1-mesa-dev pkg-config`
 
 ## License
 
-Apache-2.0. See [LICENSE](LICENSE).
+Apache-2.0.
