@@ -60,7 +60,7 @@ copyright = "2026 IdleScreen"
 maintainer = "IdleScreen <jerydleuck@gmail.com>"
 extended-description = """IdleScreen product for COSMIC Desktop.
 Installs the COSMIC panel applet and depends on idle-daemon."""
-depends = "libc6, idle-daemon"
+depends = "libc6, idle-daemon, idle-tui"
 provides = "app-cosmic, idlescreen-applet, trance-applet, idlescreen-cosmic"
 replaces = "app-cosmic, idlescreen-applet, trance-applet, idlescreen-cosmic"
 conflicts = "app-cosmic (<< 2.1.0), idlescreen-applet (<< 2.1.0), trance-applet (<< 2.0.0)"
@@ -82,7 +82,7 @@ name = "idle-cosmic"
 release = "1"
 arch = "x86_64"
 summary = "IdleScreen for COSMIC"
-description = "IdleScreen product for COSMIC: panel applet, requires idle-daemon."
+description = "IdleScreen product for COSMIC: panel applet, requires idle-daemon and idle-tui."
 license = "Apache-2.0"
 assets = [
     { source = "target/release/idlescreen-applet", dest = "/usr/bin/idlescreen-applet", mode = "755" },
@@ -95,6 +95,7 @@ assets = [
 
 [package.metadata.generate-rpm.requires]
 idle-daemon = "*"
+idle-tui = "*"
 
 [package.metadata.generate-rpm.recommends]
 idle-cli = "*"
