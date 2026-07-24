@@ -21,8 +21,8 @@ i18n-embed-fl = "0.10"
 rust-embed = "8.11"
 tokio = { version = "1.52", features = ["full"] }
 libc = "0.2"
-idle-dbus = { path = "../idle/crates/idle-dbus" }
-idle-runner = { path = "../idle/idle-runner" }
+idle-dbus = { path = "idle/crates/idle-dbus" }
+idle-runner = { path = "idle/idle-runner" }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
 
@@ -49,7 +49,7 @@ features = [
 #   sudo dnf install app-cosmic
 #   sudo apt install app-cosmic
 #
-# Installs this COSMIC applet and hard-depends on idle-core (package
+# Installs this COSMIC applet and hard-depends on the idle engine (package
 # `idlescreen`) plus all official savers (`idlescreen-savers` → every
 # `saver-*`). That is the one-command COSMIC product install.
 # ---------------------------------------------------------------------------

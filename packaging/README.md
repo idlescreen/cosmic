@@ -6,7 +6,7 @@ Built from the crate root via `cargo deb` / `cargo generate-rpm` using
 `[package.metadata.deb]` / `[package.metadata.generate-rpm]` in `Cargo.toml`.
 
 ```bash
-# with idle-core checked out as ../idle-core
+# with idle engine checked out as ./idle
 cargo build --release
 cargo deb
 cargo generate-rpm
@@ -15,7 +15,7 @@ cargo generate-rpm
 The package:
 
 - Installs the COSMIC applet binaries
-- **Requires** `idlescreen` (idle-core daemon)
+- **Requires** `idle-daemon` (idle engine daemon)
 - **Requires** `idlescreen-savers` (all official `saver-*` plugins)
 
 Mirrored product notes live under

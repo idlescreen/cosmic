@@ -26,8 +26,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Checkout IdleScreen core (path deps)
-        run: git clone --depth 1 https://github.com/idlescreen/idle-core.git ../idlescreen
+      - name: Checkout idle engine (path deps)
+        uses: actions/checkout@v4
+        with:
+          repository: idlescreen/idle
+          path: idle
 
       - name: System deps
         run: |
