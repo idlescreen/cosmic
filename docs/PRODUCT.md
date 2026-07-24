@@ -19,7 +19,7 @@ This repo’s **shipped package name is `app-cosmic`**.
 | Requires | `idlescreen` | idle-core daemon + systemd user unit |
 | Requires | `idlescreen-savers` | **all** official `saver-*` plugins |
 | Recommends | `idlescreen-cli` | `idlescreen` CLI |
-| Recommends | `idlescreen-tui` | live TUI |
+| Recommends | `app-tui` | live TUI |
 
 **Provides / Obsoletes** (transitional): `idlescreen-applet`, `trance-applet`, `idlescreen-cosmic`.
 

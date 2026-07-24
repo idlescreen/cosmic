@@ -6,7 +6,7 @@ COSMIC **product package** for [IdleScreen](https://github.com/idlescreen/idle-c
 |---|---|
 | Core (daemon) | [idlescreen/idle-core](https://github.com/idlescreen/idle-core) → package **`idlescreen`** |
 | Packages host | [idlescreen.github.io/packages](https://idlescreen.github.io/packages/) |
-| Brand | [idlescreen/idle-brand](https://github.com/idlescreen/idle-brand) |
+| Brand | [idlescreen/brand](https://github.com/idlescreen/brand) |
 | Org | [idlescreen](https://github.com/idlescreen) |
 
 [![CI](https://github.com/idlescreen/app-cosmic/actions/workflows/ci.yml/badge.svg)](https://github.com/idlescreen/app-cosmic/actions/workflows/ci.yml)
@@ -21,7 +21,7 @@ app-cosmic
     └── every official saver-* plugin
 ```
 
-Optional (recommends): `idlescreen-cli`, `idlescreen-tui`.
+Optional (recommends): `idlescreen-cli`, `app-tui`.
 
 Not needed on GNOME/KDE/Hyprland — use `idlescreen` + `idlescreen-cli` there.
 

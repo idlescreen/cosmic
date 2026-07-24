@@ -9,7 +9,7 @@ Maintainer: IdleScreen <jerydleuck@gmail.com>
 # (applet binary + these dependencies). This equivs file documents the
 # product contract for the packages host.
 Depends: idlescreen, idlescreen-savers
-Recommends: idlescreen-cli, idlescreen-tui
+Recommends: idlescreen-cli, app-tui
 Provides: idlescreen-applet, idlescreen-cosmic, trance-applet
 Architecture: all
 Description: IdleScreen for COSMIC Desktop (product)

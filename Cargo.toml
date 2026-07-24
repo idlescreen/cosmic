@@ -63,14 +63,14 @@ IdleScreen product for COSMIC Desktop.
 
 Installs the COSMIC panel applet and depends on the IdleScreen daemon \
 (idlescreen / idle-core) and all official screensaver plugins \
-(idlescreen-savers). Optional: idlescreen-cli, idlescreen-tui."""
+(idlescreen-savers). Optional: idlescreen-cli, app-tui."""
 # Product deps: daemon + every official saver (via savers meta).
 depends = "libc6, idlescreen, idlescreen-savers"
 # Transitional names from applet-only packaging.
 provides = "idlescreen-applet, trance-applet, idlescreen-cosmic"
 replaces = "idlescreen-applet, trance-applet, idlescreen-cosmic"
 conflicts = "idlescreen-applet (<< 2.0.1), trance-applet (<< 2.0.0), idlescreen-cosmic (<< 2.0.1)"
-recommends = "idlescreen-cli, idlescreen-tui"
+recommends = "idlescreen-cli, app-tui"
 enhances = "cosmic-session, cosmic-panel"
 section = "utils"
 priority = "optional"
@@ -105,7 +105,7 @@ idlescreen-savers = "*"
 
 [package.metadata.generate-rpm.recommends]
 idlescreen-cli = "*"
-idlescreen-tui = "*"
+app-tui = "*"
 
 [package.metadata.generate-rpm.provides]
 idlescreen-applet = "*"
