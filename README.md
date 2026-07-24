@@ -1,33 +1,17 @@
 # idle-cosmic
 
-IdleScreen **product package** for [COSMIC Desktop](https://system76.com/cosmic).
+**This is what COSMIC users install.**
 
 ```bash
 sudo dnf install idle-cosmic
-# or
-sudo apt install idle-cosmic
-```
-
-## What it installs
-
-```text
-idle-cosmic
-├── COSMIC panel applet
-├── Requires: idle            # daemon (idle-core)
-└── Requires: idle-savers     # every idle-saver-*
-```
-
-Optional recommends: `idle-cli` (command **`idle`**), `idle-tui`.
-
-| | |
-|---|---|
-| Core | [idle-core](https://github.com/idlescreen/idle-core) |
-| Packages | [idlescreen.github.io/packages](https://idlescreen.github.io/packages/) |
-
-```bash
 systemctl --user enable --now idle-daemon
 idle status
 ```
+
+Depends on engine packages `idle-daemon` + `idle-savers` (all `idle-saver-*`).  
+Do not install the engine alone for a desktop product.
+
+Source: [idlescreen/idle](https://github.com/idlescreen/idle).
 
 ## License
 

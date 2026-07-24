@@ -21,8 +21,8 @@ i18n-embed-fl = "0.10"
 rust-embed = "8.11"
 tokio = { version = "1.52", features = ["full"] }
 libc = "0.2"
-trance-dbus = { path = "../idle-core/crates/trance-dbus" }
-trance-runner = { path = "../idle-core/trance-runner" }
+trance-dbus = { path = "../idle/crates/trance-dbus" }
+trance-runner = { path = "../idle/trance-runner" }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
 
@@ -61,7 +61,7 @@ copyright = "2026 IdleScreen"
 maintainer = "IdleScreen <jerydleuck@gmail.com>"
 extended-description = """IdleScreen product for COSMIC Desktop.
 Installs the COSMIC panel applet and depends on the idle daemon and all official savers."""
-depends = "libc6, idle, idle-savers"
+depends = "libc6, idle-daemon, idle-savers"
 provides = "app-cosmic, idlescreen-applet, trance-applet, idlescreen-cosmic"
 replaces = "app-cosmic, idlescreen-applet, trance-applet, idlescreen-cosmic"
 conflicts = "app-cosmic (<< 2.1.0), idlescreen-applet (<< 2.1.0), trance-applet (<< 2.0.0)"
@@ -95,7 +95,7 @@ assets = [
 ]
 
 [package.metadata.generate-rpm.requires]
-idle = "*"
+idle-daemon = "*"
 idle-savers = "*"
 
 [package.metadata.generate-rpm.recommends]

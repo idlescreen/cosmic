@@ -25,4 +25,4 @@ This repo’s **shipped package name is `app-cosmic`**.
 
 ## Out of scope
 
-Engines and plugin content stay in [idle-core](https://github.com/idlescreen/idle-core) and [saver-\*](https://github.com/orgs/idlescreen/repositories?q=saver-). This repo is the COSMIC product surface only.
+Engines and plugin content stay in [idle-core](https://github.com/idlescreen/idle) and [saver-\*](https://github.com/orgs/idlescreen/repositories?q=saver-). This repo is the COSMIC product surface only.
