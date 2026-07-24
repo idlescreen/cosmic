@@ -1,11 +1,19 @@
 [package]
 name = "trance-applet"
-version = "1.0.30"
+version = "2.0.0"
 edition = "2024"
 license = "Apache-2.0"
 description = "COSMIC Desktop panel applet for IdleScreen (Wayland idle/screensaver daemon)"
 repository = "https://github.com/idlescreen/app-cosmic"
 publish = false
+
+[[bin]]
+name = "idlescreen-applet"
+path = "src/main.rs"
+
+[[bin]]
+name = "trance-applet"
+path = "src/main.rs"
 
 [dependencies]
 anyhow = "1"
@@ -13,8 +21,8 @@ i18n-embed-fl = "0.10"
 rust-embed = "8.11"
 tokio = { version = "1.52", features = ["full"] }
 libc = "0.2"
-trance-dbus = { path = "../idlescreen/crates/trance-dbus" }
-trance-runner = { path = "../idlescreen/trance-runner" }
+trance-dbus = { path = "../idle-core/crates/trance-dbus" }
+trance-runner = { path = "../idle-core/trance-runner" }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
 
@@ -36,40 +44,51 @@ features = [
 ]
 
 [package.metadata.deb]
-name = "trance-applet"
+name = "idlescreen-applet"
 changelog = "debian/changelog"
 copyright = "2026 IdleScreen"
-maintainer = "idlescreen <jerydleuck@gmail.com>"
-extended-description = "Native System76 COSMIC Desktop panel applet for the IdleScreen (trance) screensaver daemon. Optional: install only on COSMIC."
-depends = "libc6, trance"
+maintainer = "IdleScreen <jerydleuck@gmail.com>"
+extended-description = "COSMIC Desktop panel applet for IdleScreen. Optional: install only on COSMIC."
+depends = "libc6, idlescreen"
+provides = "trance-applet"
+replaces = "trance-applet"
+conflicts = "trance-applet (<< 2.0.0)"
 enhances = "cosmic-session, cosmic-panel"
 section = "utils"
 priority = "optional"
 assets = [
+    ["target/release/idlescreen-applet", "usr/bin/idlescreen-applet", "755"],
     ["target/release/trance-applet", "usr/bin/trance-applet", "755"],
-    ["resources/app.desktop", "usr/share/applications/com.system76.CosmicApplet.Trance.desktop", "644"],
-    ["resources/app.metainfo.xml", "usr/share/metainfo/com.system76.CosmicApplet.Trance.metainfo.xml", "644"],
-    ["resources/icon.png", "usr/share/pixmaps/com.system76.CosmicApplet.Trance.png", "644"],
-    ["trance-applet.1", "usr/share/man/man1/trance-applet.1", "644"]
+    ["resources/app.desktop", "usr/share/applications/io.github.idlescreen.CosmicApplet.desktop", "644"],
+    ["resources/app.metainfo.xml", "usr/share/metainfo/io.github.idlescreen.CosmicApplet.metainfo.xml", "644"],
+    ["resources/icon.png", "usr/share/pixmaps/io.github.idlescreen.CosmicApplet.png", "644"],
+    ["idlescreen-applet.1", "usr/share/man/man1/idlescreen-applet.1", "644"]
 ]
 
 [package.metadata.generate-rpm]
-name = "trance-applet"
+name = "idlescreen-applet"
 release = "1"
 arch = "x86_64"
 summary = "COSMIC Desktop panel applet for IdleScreen"
-description = "Native System76 COSMIC Desktop panel applet for the IdleScreen screensaver daemon."
+description = "Native COSMIC Desktop panel applet for the IdleScreen screensaver daemon."
 license = "Apache-2.0"
 assets = [
+    { source = "target/release/idlescreen-applet", dest = "/usr/bin/idlescreen-applet", mode = "755" },
     { source = "target/release/trance-applet", dest = "/usr/bin/trance-applet", mode = "755" },
-    { source = "resources/app.desktop", dest = "/usr/share/applications/com.system76.CosmicApplet.Trance.desktop", mode = "644" },
-    { source = "resources/app.metainfo.xml", dest = "/usr/share/metainfo/com.system76.CosmicApplet.Trance.metainfo.xml", mode = "644" },
-    { source = "resources/icon.png", dest = "/usr/share/pixmaps/com.system76.CosmicApplet.Trance.png", mode = "644" },
-    { source = "trance-applet.1", dest = "/usr/share/man/man1/trance-applet.1", mode = "644" }
+    { source = "resources/app.desktop", dest = "/usr/share/applications/io.github.idlescreen.CosmicApplet.desktop", mode = "644" },
+    { source = "resources/app.metainfo.xml", dest = "/usr/share/metainfo/io.github.idlescreen.CosmicApplet.metainfo.xml", mode = "644" },
+    { source = "resources/icon.png", dest = "/usr/share/pixmaps/io.github.idlescreen.CosmicApplet.png", mode = "644" },
+    { source = "idlescreen-applet.1", dest = "/usr/share/man/man1/idlescreen-applet.1", mode = "644" }
 ]
 
 [package.metadata.generate-rpm.requires]
-trance = "*"
+idlescreen = "*"
+
+[package.metadata.generate-rpm.provides]
+trance-applet = "*"
+
+[package.metadata.generate-rpm.obsoletes]
+trance-applet = "*"
 
 [package.metadata.generate-rpm.supplements]
 cosmic-panel = "*"

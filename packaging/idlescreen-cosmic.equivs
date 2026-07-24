@@ -1,14 +1,13 @@
-### Commented entries have reasonable defaults.
-### Uncomment to edit.
 Section: utils
 Priority: optional
 Standards-Version: 4.6.2
 
 Package: idlescreen-cosmic
-Version: 1.0.0
+Version: 2.0.0
 Maintainer: IdleScreen <jerydleuck@gmail.com>
-Depends: trance, trance-applet, trance-plugins-all
-Recommends: trance-tui, trance-cli
+Depends: idlescreen, idlescreen-applet, idlescreen-savers
+Recommends: idlescreen-tui, idlescreen-cli
+Provides: trance-applet-stack
 Architecture: all
 Description: IdleScreen full stack for COSMIC Desktop
  Metapackage installing daemon, COSMIC applet, and official savers.

@@ -1,5 +1,5 @@
-name := 'trance-applet'
-appid := 'com.system76.CosmicApplet.Trance'
+name := 'idlescreen-applet'
+appid := 'io.github.idlescreen.CosmicApplet'
 rootdir := ''
 prefix := '/usr'
 

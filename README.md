@@ -8,16 +8,16 @@ the Wayland-native idle screen and ambient display daemon for Linux.
 
 | | |
 |---|---|
-| Core | [idlescreen/idlescreen](https://github.com/idlescreen/idle-core) |
+| Core | [idlescreen/idle-core](https://github.com/idlescreen/idle-core) |
 | Packages | [idlescreen.github.io/packages](https://idlescreen.github.io/packages/) |
-| Brand | [idlescreen/brand](https://github.com/idlescreen/idle-brand) |
+| Brand | [idlescreen/idle-brand](https://github.com/idlescreen/idle-brand) |
 | Org | [idlescreen](https://github.com/idlescreen) |
 
 [![CI](https://github.com/idlescreen/app-cosmic/actions/workflows/ci.yml/badge.svg)](https://github.com/idlescreen/app-cosmic/actions/workflows/ci.yml)
 
 Not required for GNOME, KDE, Hyprland, or other desktops. Use the CLI and TUI
 from the core package there. The shipped package and binary name remain
-`trance-applet` for packaging continuity.
+`idlescreen-applet` (legacy `trance-applet` still provided for upgrades).
 
 ## Install
 
@@ -25,10 +25,10 @@ After adding the IdleScreen package repository:
 
 ```bash
 # Debian / Ubuntu / Pop!_OS (COSMIC)
-sudo apt install trance trance-applet
+sudo apt install idlescreen idlescreen-applet
 
 # Fedora
-sudo dnf install trance trance-applet
+sudo dnf install idlescreen idlescreen-applet
 ```
 
 Index: [idlescreen.github.io/packages](https://idlescreen.github.io/packages/)
@@ -46,8 +46,8 @@ cargo build --release
 
 | Path dependency | Location |
 |-----------------|----------|
-| `trance-dbus` | `../idlescreen/crates/trance-dbus` |
-| `trance-runner` | `../idlescreen/trance-runner` |
+| `trance-dbus` | `../idle-core/crates/trance-dbus` |
+| `trance-runner` | `../idle-core/trance-runner` |
 
 System dependencies (Debian/Ubuntu): `libdbus-1-dev libwayland-dev libxkbcommon-dev libssl-dev libegl1-mesa-dev libgl1-mesa-dev pkg-config`
 
@@ -58,3 +58,7 @@ Tag `vX.Y.Z` on `master`. Ship `.deb` / `.rpm` through the IdleScreen packages p
 ## License
 
 Apache-2.0. See [LICENSE](LICENSE).
+
+## Product metapackage
+
+`idlescreen-cosmic` depends on `idlescreen`, `idlescreen-applet`, and `idlescreen-savers`.

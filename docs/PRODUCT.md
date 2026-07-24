@@ -2,14 +2,19 @@
 
 Platform: **COSMIC Desktop**
 
-## Metapackage target (when published)
+## Packages (v2)
 
-`idlescreen-cosmic` (name TBD) should Depend on:
+| Package | Role |
+|---------|------|
+| `idlescreen-applet` | This applet (Obsoletes `trance-applet`) |
+| `idlescreen-cosmic` | Product meta |
 
-- core daemon + CLI (`trance` / idle-core packages)
-- this applet (`trance-applet`)
-- official savers (`trance-plugins-all` or each `trance-plugin-*`)
+`idlescreen-cosmic` Depends on:
 
-Recommends: `trance-tui` from [idle-tui](https://github.com/idlescreen/idle-tui).
+- `idlescreen` (daemon from idle-core)
+- `idlescreen-applet` (this repo)
+- `idlescreen-savers` (all official `saver-*`)
+
+Recommends: `idlescreen-cli`, `idlescreen-tui`.
 
 Engines stay in idle-core / saver-*; this repo is UI + packaging recipe only.

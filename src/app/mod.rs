@@ -29,7 +29,7 @@ impl cosmic::Application for AppModel {
     type Executor = cosmic::executor::Default;
     type Flags = ();
     type Message = Message;
-    const APP_ID: &'static str = "com.system76.CosmicApplet.Trance";
+    const APP_ID: &'static str = "io.github.idlescreen.CosmicApplet";
 
     fn core(&self) -> &cosmic::Core {
         &self.core

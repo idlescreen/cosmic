@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>com.system76.CosmicApplet.Trance</id>
+  <id>io.github.idlescreen.CosmicApplet</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>Apache-2.0</project_license>
   <name>IdleScreen</name>
@@ -13,13 +13,13 @@
     </p>
   </description>
   <icon type="stock">display-symbolic</icon>
-  <url type="vcs-browser">https://github.com/idlescreen/idlescreen-applet</url>
+  <url type="vcs-browser">https://github.com/idlescreen/app-cosmic</url>
   <url type="homepage">https://github.com/idlescreen</url>
-  <launchable type="desktop-id">com.system76.CosmicApplet.Trance.desktop</launchable>
+  <launchable type="desktop-id">io.github.idlescreen.CosmicApplet.desktop</launchable>
   <provides>
     <id>com.system76.CosmicApplet</id>
     <binaries>
-      <binary>trance-applet</binary>
+      <binary>app-cosmic</binary>
     </binaries>
   </provides>
   <requires>

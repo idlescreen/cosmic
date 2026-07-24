@@ -1,3 +1,9 @@
+idlescreen-applet (2.0.0-1) unstable; urgency=medium
+
+  * Rename package from trance-applet to idlescreen-applet.
+
+ -- IdleScreen <jerydleuck@gmail.com>  Thu, 23 Jul 2026 15:40:27 -1000
+
 trance-applet (1.0.29-1) unstable; urgency=medium
 
   * Phase B: config unit tests, Blue Ocean README, IdleScreen branding, CI polish.
