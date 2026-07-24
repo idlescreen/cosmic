@@ -131,7 +131,7 @@ pub fn set_render_scale(scale: f32) -> Result<()> {
 ///
 /// If the daemon is down, try to start it first. As a last resort, run the
 /// packaged `trance-daemon run-plugin <name>` fullscreen helper (not the
-/// unshipped `trance-runner` binary).
+/// unshipped `idle-runner` binary).
 #[tracing::instrument]
 pub fn preview_saver(name: &str) -> Result<()> {
     if !is_running() {
