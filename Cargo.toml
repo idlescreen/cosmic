@@ -1,9 +1,9 @@
 [package]
 name = "trance-applet"
-version = "2.0.0"
+version = "2.0.1"
 edition = "2024"
 license = "Apache-2.0"
-description = "COSMIC Desktop panel applet for IdleScreen (Wayland idle/screensaver daemon)"
+description = "IdleScreen for COSMIC — product package (applet + pulls daemon and all savers)"
 repository = "https://github.com/idlescreen/app-cosmic"
 publish = false
 
@@ -43,16 +43,34 @@ features = [
     "winit",
 ]
 
+# ---------------------------------------------------------------------------
+# Product package: `app-cosmic`
+#
+#   sudo dnf install app-cosmic
+#   sudo apt install app-cosmic
+#
+# Installs this COSMIC applet and hard-depends on idle-core (package
+# `idlescreen`) plus all official savers (`idlescreen-savers` → every
+# `saver-*`). That is the one-command COSMIC product install.
+# ---------------------------------------------------------------------------
 [package.metadata.deb]
-name = "idlescreen-applet"
+name = "app-cosmic"
 changelog = "debian/changelog"
 copyright = "2026 IdleScreen"
 maintainer = "IdleScreen <jerydleuck@gmail.com>"
-extended-description = "COSMIC Desktop panel applet for IdleScreen. Optional: install only on COSMIC."
-depends = "libc6, idlescreen"
-provides = "trance-applet"
-replaces = "trance-applet"
-conflicts = "trance-applet (<< 2.0.0)"
+extended-description = """\
+IdleScreen product for COSMIC Desktop.
+
+Installs the COSMIC panel applet and depends on the IdleScreen daemon \
+(idlescreen / idle-core) and all official screensaver plugins \
+(idlescreen-savers). Optional: idlescreen-cli, idlescreen-tui."""
+# Product deps: daemon + every official saver (via savers meta).
+depends = "libc6, idlescreen, idlescreen-savers"
+# Transitional names from applet-only packaging.
+provides = "idlescreen-applet, trance-applet, idlescreen-cosmic"
+replaces = "idlescreen-applet, trance-applet, idlescreen-cosmic"
+conflicts = "idlescreen-applet (<< 2.0.1), trance-applet (<< 2.0.0), idlescreen-cosmic (<< 2.0.1)"
+recommends = "idlescreen-cli, idlescreen-tui"
 enhances = "cosmic-session, cosmic-panel"
 section = "utils"
 priority = "optional"
@@ -66,11 +84,11 @@ assets = [
 ]
 
 [package.metadata.generate-rpm]
-name = "idlescreen-applet"
+name = "app-cosmic"
 release = "1"
 arch = "x86_64"
-summary = "COSMIC Desktop panel applet for IdleScreen"
-description = "Native COSMIC Desktop panel applet for the IdleScreen screensaver daemon."
+summary = "IdleScreen for COSMIC (applet + daemon + all savers)"
+description = """IdleScreen product for COSMIC Desktop. Installs the panel applet and requires the IdleScreen daemon and all official screensaver plugins."""
 license = "Apache-2.0"
 assets = [
     { source = "target/release/idlescreen-applet", dest = "/usr/bin/idlescreen-applet", mode = "755" },
@@ -83,12 +101,21 @@ assets = [
 
 [package.metadata.generate-rpm.requires]
 idlescreen = "*"
+idlescreen-savers = "*"
+
+[package.metadata.generate-rpm.recommends]
+idlescreen-cli = "*"
+idlescreen-tui = "*"
 
 [package.metadata.generate-rpm.provides]
+idlescreen-applet = "*"
 trance-applet = "*"
+idlescreen-cosmic = "*"
 
 [package.metadata.generate-rpm.obsoletes]
+idlescreen-applet = "*"
 trance-applet = "*"
+idlescreen-cosmic = "*"
 
 [package.metadata.generate-rpm.supplements]
 cosmic-panel = "*"
