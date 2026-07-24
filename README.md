@@ -8,7 +8,7 @@ systemctl --user enable --now idle-daemon
 idle status
 ```
 
-Depends on engine packages `idle-daemon` + `idle-savers` (all `idle-saver-*`).  
+Depends on engine package `idle-daemon`. Recommends official screensaver plugins (`idle-saver-*`) as weak dependencies.  
 Do not install the engine alone for a desktop product.
 
 Source: [idlescreen/idle](https://github.com/idlescreen/idle).
