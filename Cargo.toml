@@ -125,3 +125,4 @@ idlescreen-cosmic = "*"
 
 [package.metadata.generate-rpm.supplements]
 cosmic-panel = "*"
+cosmic-session = "*"
