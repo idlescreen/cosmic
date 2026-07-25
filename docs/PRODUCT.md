@@ -1,28 +1,38 @@
-# app-cosmic product
+# idle-cosmic product
 
 Platform: **COSMIC Desktop**
 
 ## One-command install
 
+Prefer the OS/DE-aware installer (pulls modular packages + applet on COSMIC):
+
 ```bash
-sudo dnf install app-cosmic   # Fedora
-sudo apt install app-cosmic   # Debian/Pop
+curl -fsSL https://idlescreen.github.io/packages/install.sh | sh
 ```
 
-## Package: `app-cosmic`
+Or install the applet package alone after the engine is present:
 
-This repo’s **shipped package name is `app-cosmic`**.
+```bash
+sudo dnf install idle-cosmic   # Fedora
+sudo apt install idle-cosmic   # Debian/Pop
+```
 
-| Pulls | Package | Role |
-|-------|---------|------|
-| Ships | (this RPM/DEB) | COSMIC panel applet binaries |
-| Requires | `idlescreen` | idle-core daemon + systemd user unit |
-| Requires | `idlescreen-savers` | **all** official `saver-*` plugins |
-| Recommends | `idlescreen-cli` | `idlescreen` CLI |
-| Recommends | `app-tui` | live TUI |
+## Package: `idle-cosmic`
 
-**Provides / Obsoletes** (transitional): `idlescreen-applet`, `trance-applet`, `idlescreen-cosmic`.
+Shipped package name is **`idle-cosmic`** (crate may still be named `idle-applet` internally).
+
+| Role | Package |
+|------|---------|
+| Ships | COSMIC panel applet (`idlescreen-applet` binary) |
+| Requires | `idle-daemon` |
+| Soft | `idle-savers`, `idle-cli`, `idle-tui` (via install script / recommends) |
+
+**Provides** (transitional upgrades): `app-cosmic`, `idlescreen-applet`, `trance-applet`, `idlescreen-cosmic`.
 
 ## Out of scope
 
-Engines and plugin content stay in [idle-core](https://github.com/idlescreen/idle) and [saver-\*](https://github.com/orgs/idlescreen/repositories?q=saver-). This repo is the COSMIC product surface only.
+Daemon, CLI, and saver plugins live in [idle](https://github.com/idlescreen/idle) and `idle-saver-*` repos. This package is the COSMIC panel surface only.
+
+## Config
+
+Shared with the daemon: prefer `~/.config/idle/config.yaml` (legacy `~/.config/trance/` still read).

@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright 2026 IdleScreen
 
-//! On-disk theme/settings config shared with the IdleScreen daemon (`trance`).
+//! On-disk theme/settings config shared with the IdleScreen daemon.
+//! Prefer `~/.config/idle/config.yaml`; fall back to legacy `~/.config/trance/`.
 
 use cosmic::cosmic_config::{self, CosmicConfigEntry, cosmic_config_derive::CosmicConfigEntry};
 use std::fs;
@@ -40,19 +41,28 @@ impl ThemeConfig {
         }
     }
 
+    /// Write path and primary read path: `~/.config/idle/config.yaml`.
     pub fn get_config_path() -> Option<PathBuf> {
-        if let Ok(xdg_config) = std::env::var("XDG_CONFIG_HOME")
-            && !xdg_config.is_empty()
+        Self::config_path_candidates().into_iter().next()
+    }
+
+    /// Idle first, legacy `trance` second (matches idle-daemon).
+    pub fn config_path_candidates() -> Vec<PathBuf> {
+        let mut bases = Vec::new();
+        if let Ok(xdg) = std::env::var("XDG_CONFIG_HOME")
+            && !xdg.is_empty()
         {
-            return Some(PathBuf::from(xdg_config).join("trance").join("config.yaml"));
+            bases.push(PathBuf::from(xdg));
         }
-        let home = std::env::var("HOME").ok()?;
-        Some(
-            PathBuf::from(home)
-                .join(".config")
-                .join("trance")
-                .join("config.yaml"),
-        )
+        if let Ok(home) = std::env::var("HOME") {
+            bases.push(PathBuf::from(home).join(".config"));
+        }
+        let mut out = Vec::new();
+        for base in bases {
+            out.push(base.join("idle").join("config.yaml"));
+            out.push(base.join("trance").join("config.yaml"));
+        }
+        out
     }
 
     /// Apply a single `key: value` line (YAML-ish) onto `config`.
@@ -123,22 +133,23 @@ impl ThemeConfig {
     }
 
     pub fn load() -> Self {
-        if let Some(path) = Self::get_config_path()
-            && let Ok(content) = fs::read_to_string(&path)
-        {
-            return Self::from_yaml_content(&content);
+        for path in Self::config_path_candidates() {
+            if let Ok(content) = fs::read_to_string(&path) {
+                return Self::from_yaml_content(&content);
+            }
         }
         Self::defaults()
     }
 
     pub fn save(&self) -> std::io::Result<()> {
+        // Always write to primary idle path so settings converge with the daemon.
         if let Some(path) = Self::get_config_path() {
             if let Some(parent) = path.parent() {
                 fs::create_dir_all(parent)?;
             }
             let active_str = self.active_saver.as_deref().unwrap_or("none");
             let content = format!(
-                "# IdleScreen (trance) themes and settings\n\
+                "# IdleScreen themes and settings\n\
                  accent_color: \"{}\"\n\
                  # dark_mode is auto-detected from system\n\
                  idle_timeout_mins: {}\n\

@@ -44,10 +44,10 @@ features = [
 ]
 
 # ---------------------------------------------------------------------------
-# Product package: `app-cosmic`
+# Product package: `idle-cosmic`
 #
-#   sudo dnf install app-cosmic
-#   sudo apt install app-cosmic
+#   sudo dnf install idle-cosmic
+#   sudo apt install idle-cosmic
 #
 # Installs this COSMIC applet and depends on the idle engine daemon
 # (`idle-daemon`), with recommended screensaver plugins (`idle-saver-*`).
