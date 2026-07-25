@@ -57,17 +57,15 @@ impl AppModel {
                 }
             }
             Message::OpenDashboard => {
-                let ok = std::process::Command::new("idlescreen")
-                    .arg("tui")
-                    .spawn()
-                    .or_else(|_| {
-                        std::process::Command::new("idle-tui").spawn()
-                    })
-                    .is_ok();
-                if !ok {
-                    self.last_error = Some(fl!("error-tui"));
-                } else {
+                // idle-tui needs a TTY — launch inside a terminal emulator.
+                if crate::daemon_client::open_tui_dashboard() {
                     self.last_error = None;
+                    // Close popup so the new terminal isn't hidden under it.
+                    if let Some(p) = self.popup.take() {
+                        return destroy_popup(p);
+                    }
+                } else {
+                    self.last_error = Some(fl!("error-tui"));
                 }
             }
             Message::ToggleIdleEnabled(toggled) => {

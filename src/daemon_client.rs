@@ -178,3 +178,55 @@ fn wait_until_running(budget: Duration) -> Result<()> {
         bail!("idle-daemon did not become reachable on the session bus within {budget:?}")
     }
 }
+
+/// Launch the IdleScreen TUI in a terminal (requires a real TTY).
+pub fn open_tui_dashboard() -> bool {
+    let programs: &[&[&str]] = &[
+        &["idle-tui"],
+        &["idlescreen-tui"],
+        &["idlescreen", "tui"],
+        &["idle", "tui"],
+    ];
+    // cosmic-term: `-e` / `--` then program + args
+    let terminals: &[(&str, &[&str])] = &[
+        ("cosmic-term", &["-e"]),
+        ("cosmic-term", &["--"]),
+        ("kgx", &["-e"]),
+        ("gnome-terminal", &["--"]),
+        ("alacritty", &["-e"]),
+        ("kitty", &[]),
+        ("foot", &["-e"]),
+        ("xterm", &["-e"]),
+    ];
+
+    for (term, term_flags) in terminals {
+        for prog in programs {
+            let mut cmd = Command::new(term);
+            cmd.args(*term_flags);
+            for p in *prog {
+                cmd.arg(p);
+            }
+            #[cfg(unix)]
+            {
+                use std::os::unix::process::CommandExt;
+                // SAFETY: start a new session so the terminal outlives the applet.
+                unsafe {
+                    cmd.pre_exec(|| {
+                        libc::setsid();
+                        Ok(())
+                    });
+                }
+            }
+            if cmd.spawn().is_ok() {
+                return true;
+            }
+        }
+    }
+
+    for desktop_id in ["io.github.idlescreen.tui", "idlescreen"] {
+        if Command::new("gtk-launch").arg(desktop_id).spawn().is_ok() {
+            return true;
+        }
+    }
+    false
+}
