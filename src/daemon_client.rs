@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright 2026 IdleScreen
 
-//! D-Bus / systemd helpers for talking to `trance-daemon` from the panel applet.
+//! D-Bus / systemd helpers for talking to `idle-daemon` from the panel applet.
 
 use std::process::Command;
 use std::thread;
@@ -16,72 +16,78 @@ pub fn is_running() -> bool {
 
 /// Start the user unit and enable it so it returns after login/upgrades.
 ///
-/// Falls back to spawning `trance-daemon daemon` only if systemctl is unusable
-/// (unusual on a COSMIC session).
+/// Falls back to spawning `idle-daemon daemon` only if systemctl is unusable
+/// (unusual on a COSMIC session). Legacy `trance-daemon` binary is tried last.
 pub fn start_daemon_service() -> Result<()> {
-    let status = Command::new("systemctl")
-        .args(["--user", "enable", "--now", "trance-daemon.service"])
-        .status()
-        .context("systemctl --user enable --now trance-daemon")?;
+    for unit in ["idle-daemon.service", "trance-daemon.service"] {
+        let status = Command::new("systemctl")
+            .args(["--user", "enable", "--now", unit])
+            .status()
+            .with_context(|| format!("systemctl --user enable --now {unit}"))?;
 
-    if status.success() {
-        wait_until_running(Duration::from_secs(3))?;
-        return Ok(());
+        if status.success() {
+            wait_until_running(Duration::from_secs(3))?;
+            return Ok(());
+        }
+        tracing::warn!(
+            "systemctl enable --now {unit} failed (exit {:?})",
+            status.code()
+        );
     }
 
-    tracing::warn!(
-        "systemctl enable --now failed (exit {:?}); trying direct spawn",
-        status.code()
-    );
-    Command::new("trance-daemon")
-        .arg("daemon")
-        .spawn()
-        .context("spawn trance-daemon daemon")?;
-    wait_until_running(Duration::from_secs(3))?;
-    Ok(())
+    tracing::warn!("systemctl enable --now failed; trying direct spawn");
+    for bin in ["idle-daemon", "idlescreen-daemon", "trance-daemon"] {
+        if Command::new(bin).arg("daemon").spawn().is_ok() {
+            wait_until_running(Duration::from_secs(3))?;
+            return Ok(());
+        }
+    }
+    bail!("could not start idle-daemon via systemctl or direct spawn")
 }
 
 /// Stop the running user unit (does **not** disable — keeps login autostart).
 pub fn stop_daemon_service() -> Result<()> {
-    let status = Command::new("systemctl")
-        .args(["--user", "stop", "trance-daemon.service"])
-        .status()
-        .context("systemctl --user stop trance-daemon")?;
+    for unit in ["idle-daemon.service", "trance-daemon.service"] {
+        let status = Command::new("systemctl")
+            .args(["--user", "stop", unit])
+            .status()
+            .with_context(|| format!("systemctl --user stop {unit}"))?;
 
-    if status.success() {
-        return Ok(());
+        if status.success() {
+            return Ok(());
+        }
     }
 
     // Fallback: SIGTERM via PID file if the unit is unmanaged.
-    let pid_path = if let Ok(runtime_dir) = std::env::var("XDG_RUNTIME_DIR") {
-        std::path::PathBuf::from(runtime_dir).join("trance-daemon.pid")
-    } else {
-        std::env::temp_dir().join("trance-daemon.pid")
-    };
-    if let Ok(pid_str) = std::fs::read_to_string(&pid_path)
-        && let Ok(pid) = pid_str.trim().parse::<i32>()
-    {
-        // SAFETY: kill with SIGTERM on a process we believe is trance-daemon.
-        unsafe {
-            libc::kill(pid, libc::SIGTERM);
+    let runtime = std::env::var("XDG_RUNTIME_DIR").ok();
+    for name in ["idle-daemon.pid", "trance-daemon.pid"] {
+        let pid_path = if let Some(ref runtime_dir) = runtime {
+            std::path::PathBuf::from(runtime_dir).join(name)
+        } else {
+            std::env::temp_dir().join(name)
+        };
+        if let Ok(pid_str) = std::fs::read_to_string(&pid_path)
+            && let Ok(pid) = pid_str.trim().parse::<i32>()
+        {
+            // SAFETY: kill with SIGTERM on a process we believe is the idle daemon.
+            unsafe {
+                libc::kill(pid, libc::SIGTERM);
+            }
+            return Ok(());
         }
-        return Ok(());
     }
 
-    bail!(
-        "could not stop trance-daemon (systemctl exit {:?})",
-        status.code()
-    )
+    bail!("could not stop idle-daemon via systemctl or PID file")
 }
 
 #[tracing::instrument]
 pub fn fetch_status() -> Result<DaemonStatus> {
-    let client = TranceClient::connect().context("failed to connect to trance daemon")?;
+    let client = TranceClient::connect().context("failed to connect to idle daemon")?;
     client.get_status().context("failed to fetch daemon status")
 }
 
 pub fn set_idle_enabled(enabled: bool) -> Result<()> {
-    let client = TranceClient::connect().context("failed to connect to trance daemon")?;
+    let client = TranceClient::connect().context("failed to connect to idle daemon")?;
     if enabled {
         client.enable().context("failed to enable idle activation")
     } else {
@@ -93,21 +99,21 @@ pub fn set_idle_enabled(enabled: bool) -> Result<()> {
 
 pub fn set_timeout(minutes: u32) -> Result<()> {
     TranceClient::connect()
-        .context("failed to connect to trance daemon")?
+        .context("failed to connect to idle daemon")?
         .set_timeout(minutes)
         .context("failed to set idle timeout")
 }
 
 pub fn set_active_saver(name: Option<&str>) -> Result<()> {
     TranceClient::connect()
-        .context("failed to connect to trance daemon")?
+        .context("failed to connect to idle daemon")?
         .set_saver(name.unwrap_or(""))
         .context("failed to set active screensaver")
 }
 
 pub fn set_show_fps_overlay(enabled: bool) -> Result<()> {
     TranceClient::connect()
-        .context("failed to connect to trance daemon")?
+        .context("failed to connect to idle daemon")?
         .set_show_fps_overlay(enabled)
         .context("failed to set FPS overlay")
 }
@@ -115,14 +121,14 @@ pub fn set_show_fps_overlay(enabled: bool) -> Result<()> {
 #[tracing::instrument]
 pub fn list_savers() -> Result<Vec<String>> {
     TranceClient::connect()
-        .context("failed to connect to trance daemon")?
+        .context("failed to connect to idle daemon")?
         .list_savers()
         .context("failed to list installed screensavers")
 }
 
 pub fn set_render_scale(scale: f32) -> Result<()> {
     TranceClient::connect()
-        .context("failed to connect to trance daemon")?
+        .context("failed to connect to idle daemon")?
         .set_render_scale(scale)
         .context("failed to set render scale")
 }
@@ -130,8 +136,7 @@ pub fn set_render_scale(scale: f32) -> Result<()> {
 /// Preview a saver: prefer the daemon D-Bus path (layer-shell overlay).
 ///
 /// If the daemon is down, try to start it first. As a last resort, run the
-/// packaged `trance-daemon run-plugin <name>` fullscreen helper (not the
-/// unshipped `idle-runner` binary).
+/// packaged `idle-daemon run-plugin <name>` fullscreen helper.
 #[tracing::instrument]
 pub fn preview_saver(name: &str) -> Result<()> {
     if !is_running() {
@@ -151,12 +156,12 @@ pub fn preview_saver(name: &str) -> Result<()> {
         }
     }
 
-    // Packaged binary path (ships with the `trance` package).
-    Command::new("trance-daemon")
-        .args(["run-plugin", name])
-        .spawn()
-        .context("spawn trance-daemon run-plugin")?;
-    Ok(())
+    for bin in ["idle-daemon", "idlescreen-daemon", "trance-daemon"] {
+        if Command::new(bin).args(["run-plugin", name]).spawn().is_ok() {
+            return Ok(());
+        }
+    }
+    bail!("could not spawn idle-daemon run-plugin for preview")
 }
 
 fn wait_until_running(budget: Duration) -> Result<()> {
@@ -170,6 +175,6 @@ fn wait_until_running(budget: Duration) -> Result<()> {
     if is_running() {
         Ok(())
     } else {
-        bail!("trance-daemon did not become reachable on the session bus within {budget:?}")
+        bail!("idle-daemon did not become reachable on the session bus within {budget:?}")
     }
 }

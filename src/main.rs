@@ -3,10 +3,10 @@
 
 //! COSMIC panel applet entry point for IdleScreen (trance) screensaver settings.
 //!
-//! Talks to `trance-daemon` over D-Bus when available, or falls back to on-disk
+//! Talks to `idle-daemon` over D-Bus when available, or falls back to on-disk
 //! config. Mirrors idle timeout, FPS overlay, render scale, and active saver.
 //! Turning the daemon on uses `systemctl --user enable --now` so it survives
-//! logins; preview prefers D-Bus and falls back to `trance-daemon run-plugin`.
+//! logins; preview prefers D-Bus and falls back to `idle-daemon run-plugin`.
 
 mod app;
 mod config;

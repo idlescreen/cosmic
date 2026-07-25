@@ -24,7 +24,7 @@ impl AppModel {
                     match crate::daemon_client::start_daemon_service() {
                         Ok(()) => self.daemon_running = true,
                         Err(e) => {
-                            tracing::error!("failed to start trance-daemon: {e:#}");
+                            tracing::error!("failed to start idle-daemon: {e:#}");
                             self.daemon_running = crate::daemon_client::is_running();
                         }
                     }
@@ -32,7 +32,7 @@ impl AppModel {
                 } else {
                     // Stop only — keep the unit *enabled* for next login.
                     if let Err(e) = crate::daemon_client::stop_daemon_service() {
-                        tracing::error!("failed to stop trance-daemon: {e:#}");
+                        tracing::error!("failed to stop idle-daemon: {e:#}");
                     }
                     self.daemon_running = crate::daemon_client::is_running();
                 }
