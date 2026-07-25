@@ -11,7 +11,7 @@ impl AppModel {
         let btn = self
             .core
             .applet
-            .icon_button("display-symbolic")
+            .icon_button(super::ICON_NAME)
             .on_press(Message::TogglePopup);
         // Middle-click = quick preview of the active (or random) saver.
         cosmic::iced::widget::mouse_area(btn)

@@ -6,3 +6,5 @@ vendor.tar
 *.deb
 *.rpm
 target/
+# Local path dep: CI checks out idlescreen/idle here; local may be a symlink
+/idle/

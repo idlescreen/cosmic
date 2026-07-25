@@ -1,3 +1,10 @@
+idle-cosmic (2.1.3-1) unstable; urgency=medium
+
+  * Ship COSMIC-style symbolic panel icon (monitor + idle moon).
+  * Install icon to hicolor scalable apps/status; drop unused pixmap.
+
+ -- IdleScreen <jerydleuck@gmail.com>  Fri, 24 Jul 2026 00:00:00 +0000
+
 idle-cosmic (2.1.1-1) unstable; urgency=medium
 
   * Depend on idle-dbus / idle-runner (engine crate rename).

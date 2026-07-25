@@ -73,7 +73,8 @@ assets = [
     ["target/release/trance-applet", "usr/bin/trance-applet", "755"],
     ["resources/app.desktop", "usr/share/applications/io.github.idlescreen.CosmicApplet.desktop", "644"],
     ["resources/app.metainfo.xml", "usr/share/metainfo/io.github.idlescreen.CosmicApplet.metainfo.xml", "644"],
-    ["resources/icon.png", "usr/share/pixmaps/io.github.idlescreen.CosmicApplet.png", "644"],
+    ["resources/io.github.idlescreen.CosmicApplet-symbolic.svg", "usr/share/icons/hicolor/scalable/apps/io.github.idlescreen.CosmicApplet-symbolic.svg", "644"],
+    ["resources/io.github.idlescreen.CosmicApplet-symbolic.svg", "usr/share/icons/hicolor/scalable/status/io.github.idlescreen.CosmicApplet-symbolic.svg", "644"],
     ["idlescreen-applet.1", "usr/share/man/man1/idlescreen-applet.1", "644"]
 ]
 
@@ -89,7 +90,8 @@ assets = [
     { source = "target/release/trance-applet", dest = "/usr/bin/trance-applet", mode = "755" },
     { source = "resources/app.desktop", dest = "/usr/share/applications/io.github.idlescreen.CosmicApplet.desktop", mode = "644" },
     { source = "resources/app.metainfo.xml", dest = "/usr/share/metainfo/io.github.idlescreen.CosmicApplet.metainfo.xml", mode = "644" },
-    { source = "resources/icon.png", dest = "/usr/share/pixmaps/io.github.idlescreen.CosmicApplet.png", mode = "644" },
+    { source = "resources/io.github.idlescreen.CosmicApplet-symbolic.svg", dest = "/usr/share/icons/hicolor/scalable/apps/io.github.idlescreen.CosmicApplet-symbolic.svg", mode = "644" },
+    { source = "resources/io.github.idlescreen.CosmicApplet-symbolic.svg", dest = "/usr/share/icons/hicolor/scalable/status/io.github.idlescreen.CosmicApplet-symbolic.svg", mode = "644" },
     { source = "idlescreen-applet.1", dest = "/usr/share/man/man1/idlescreen-applet.1", mode = "644" }
 ]
 

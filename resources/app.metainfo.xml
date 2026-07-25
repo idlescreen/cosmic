@@ -7,19 +7,20 @@
   <summary>IdleScreen screensaver applet for COSMIC</summary>
   <description>
     <p>
-      Optional COSMIC Desktop panel applet for the IdleScreen (trance) Wayland
-      idle and ambient screensaver daemon. Toggle the user service, idle
+      Optional COSMIC Desktop panel applet for the IdleScreen Wayland idle
+      and ambient screensaver daemon. Toggle the user service, idle
       activation, timeout, render scale, FPS overlay, and preview plugins.
     </p>
   </description>
-  <icon type="stock">display-symbolic</icon>
-  <url type="vcs-browser">https://github.com/idlescreen/app-cosmic</url>
-  <url type="homepage">https://github.com/idlescreen</url>
+  <icon type="stock">io.github.idlescreen.CosmicApplet-symbolic</icon>
+  <url type="vcs-browser">https://github.com/idlescreen/idle-cosmic</url>
+  <url type="homepage">https://idlescreen.github.io</url>
   <launchable type="desktop-id">io.github.idlescreen.CosmicApplet.desktop</launchable>
   <provides>
-    <id>com.system76.CosmicApplet</id>
+    <id>io.github.idlescreen.CosmicApplet</id>
     <binaries>
-      <binary>app-cosmic</binary>
+      <binary>idlescreen-applet</binary>
+      <binary>trance-applet</binary>
     </binaries>
   </provides>
   <requires>

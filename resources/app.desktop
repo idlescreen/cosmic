@@ -2,7 +2,7 @@
 Name=IdleScreen
 Comment=IdleScreen screensaver applet for COSMIC
 Type=Application
-Icon=display-symbolic
+Icon=io.github.idlescreen.CosmicApplet-symbolic
 Exec=idlescreen-applet %F
 Terminal=false
 StartupNotify=true

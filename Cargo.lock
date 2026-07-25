@@ -2526,14 +2526,14 @@ checksum = "b9e0384b61958566e926dc50660321d12159025e767c18e043daf26b70104c39"
 
 [[package]]
 name = "idle-api"
-version = "2.3.0"
+version = "2.3.4"
 dependencies = [
  "bytemuck",
 ]
 
 [[package]]
 name = "idle-applet"
-version = "2.1.1"
+version = "2.1.3"
 dependencies = [
  "anyhow",
  "i18n-embed",
@@ -2550,7 +2550,7 @@ dependencies = [
 
 [[package]]
 name = "idle-dbus"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "tracing",
  "zbus",
@@ -2558,7 +2558,7 @@ dependencies = [
 
 [[package]]
 name = "idle-runner"
-version = "2.3.0"
+version = "2.3.2"
 dependencies = [
  "bytemuck",
  "crossterm",
@@ -2579,7 +2579,7 @@ dependencies = [
 
 [[package]]
 name = "idle-upscaler"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "bytemuck",
  "idle-api",

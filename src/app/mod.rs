@@ -13,6 +13,9 @@ use cosmic::prelude::*;
 
 pub use message::Message;
 
+/// Panel / desktop icon name (hicolor scalable symbolic).
+pub(crate) const ICON_NAME: &str = "io.github.idlescreen.CosmicApplet-symbolic";
+
 #[derive(Default)]
 pub struct AppModel {
     pub(crate) core: cosmic::Core,

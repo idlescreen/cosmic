@@ -9,7 +9,9 @@ cargo-target-dir := env('CARGO_TARGET_DIR', 'target')
 appdata-dst := base-dir / 'share' / 'appdata' / appid + '.metainfo.xml'
 bin-dst := base-dir / 'bin' / name
 desktop-dst := base-dir / 'share' / 'applications' / appid + '.desktop'
-icon-dst := base-dir / 'share' / 'pixmaps' / appid + '.png'
+icon-svg := appid + '-symbolic.svg'
+icon-apps-dst := base-dir / 'share' / 'icons' / 'hicolor' / 'scalable' / 'apps' / icon-svg
+icon-status-dst := base-dir / 'share' / 'icons' / 'hicolor' / 'scalable' / 'status' / icon-svg
 
 # Default recipe which runs `just build-release`
 default: build-release
@@ -51,11 +53,12 @@ install:
     install -Dm0755 {{ cargo-target-dir / 'release' / name }} {{bin-dst}}
     install -Dm0644 resources/app.desktop {{desktop-dst}}
     install -Dm0644 resources/app.metainfo.xml {{appdata-dst}}
-    install -Dm0644 resources/icon.png {{icon-dst}}
+    install -Dm0644 resources/{{ icon-svg }} {{icon-apps-dst}}
+    install -Dm0644 resources/{{ icon-svg }} {{icon-status-dst}}
 
 # Uninstalls installed files
 uninstall:
-    rm {{bin-dst}} {{desktop-dst}} {{icon-dst}}
+    rm -f {{bin-dst}} {{desktop-dst}} {{appdata-dst}} {{icon-apps-dst}} {{icon-status-dst}}
 
 # Vendor dependencies locally
 vendor:
