@@ -3,15 +3,22 @@
 
 use cosmic::iced::window::Id;
 use cosmic::widget;
+use cosmic::widget::icon;
 
 use super::{AppModel, Message};
 
+/// Panel glyph (monitor + idle moon). Embedded so the top-bar icon always
+/// paints — theme lookup can return a blank SVG when the icon is missing.
+const PANEL_ICON_SVG: &[u8] =
+    include_bytes!("../../resources/io.github.idlescreen.CosmicApplet-symbolic.svg");
+
 impl AppModel {
     pub(crate) fn view_panel(&self) -> cosmic::Element<'_, Message> {
+        let handle = icon::from_svg_bytes(PANEL_ICON_SVG).symbolic(true);
         let btn = self
             .core
             .applet
-            .icon_button(super::ICON_NAME)
+            .icon_button_from_handle(handle)
             .on_press(Message::TogglePopup);
         // Middle-click = quick preview of the active (or random) saver.
         cosmic::iced::widget::mouse_area(btn)
