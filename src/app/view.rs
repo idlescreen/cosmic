@@ -40,18 +40,21 @@ impl AppModel {
     }
 
     pub(crate) fn view_popup(&self, _id: Id) -> cosmic::Element<'_, Message> {
-        // Compact one-line header: title + short status.
-        let status = if self.daemon_running {
-            fl!("status-running-short")
+        // Header: title + Preview (standard style — not suggested/accent red).
+        let preview_label = if self.daemon_running {
+            fl!("preview-now")
         } else {
-            fl!("status-stopped-short")
+            fl!("preview-starts-daemon")
         };
+        let preview_btn = widget::button::standard(preview_label).on_press(Message::TriggerPreview);
+
         let mut header = cosmic::iced::widget::Column::new().spacing(2).push(
             cosmic::iced::widget::Row::new()
                 .spacing(8)
                 .align_y(cosmic::iced::Alignment::Center)
                 .push(widget::text(fl!("app-title")).size(15))
-                .push(widget::text(status).size(11)),
+                .push(cosmic::iced::widget::Space::new().width(cosmic::iced::Length::Fill))
+                .push(preview_btn),
         );
         if let Some(err) = &self.last_error {
             header = header.push(widget::text(err.as_str()).size(11));
@@ -70,13 +73,7 @@ impl AppModel {
             .push(timeout_val)
             .push(increase_btn);
 
-        let preview_label = if self.daemon_running {
-            fl!("preview-now")
-        } else {
-            fl!("preview-starts-daemon")
-        };
-
-        // Main: activation, timeout, savers, preview, advanced.
+        // Main: activation, timeout, savers, advanced (Preview is in the header).
         let mut content_list = widget::list_column()
             .add(header)
             .add(widget::settings::item(
@@ -89,11 +86,6 @@ impl AppModel {
                 timeout_adjuster,
             ))
             .add(self.saver_grid())
-            .add(
-                widget::button::suggested(preview_label)
-                    .width(cosmic::iced::Length::Fill)
-                    .on_press(Message::TriggerPreview),
-            )
             .add(
                 widget::button::standard(fl!("advanced"))
                     .width(cosmic::iced::Length::Fill)
