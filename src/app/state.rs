@@ -17,7 +17,6 @@ impl AppModel {
                 } else {
                     Some(status.active_saver)
                 };
-                self.gpu_enabled = false;
                 self.show_fps_overlay = status.show_fps_overlay;
                 if let Ok(scale) = status.render_scale.parse::<f32>() {
                     self.local_config.render_scale = scale;
@@ -29,7 +28,6 @@ impl AppModel {
         } else {
             self.local_config = ThemeConfig::load();
             self.screensavers = idle_runner::discovery::detect_screensavers();
-            self.gpu_enabled = false;
             self.show_fps_overlay = self.local_config.show_fps_overlay;
         }
     }

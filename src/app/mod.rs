@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright 2026 IdleScreen
 
-//! COSMIC panel applet for IdleScreen (trance) screensaver configuration.
+//! COSMIC panel applet for IdleScreen screensaver configuration.
 
 mod message;
 mod state;
@@ -13,8 +13,8 @@ use cosmic::prelude::*;
 
 pub use message::Message;
 
-/// Desktop / hicolor theme icon name (also shipped as scalable SVG).
-/// The panel button embeds the SVG; this name is for the `.desktop` `Icon=` field.
+/// Desktop / hicolor theme icon name (shipped as scalable SVG).
+/// Panel button embeds the SVG; this name is for the `.desktop` `Icon=` field.
 #[allow(dead_code)]
 pub(crate) const ICON_NAME: &str = "io.github.idlescreen.CosmicApplet-symbolic";
 
@@ -26,8 +26,11 @@ pub struct AppModel {
     pub(crate) local_config: crate::config::ThemeConfig,
     pub(crate) screensavers: Vec<String>,
     pub(crate) daemon_running: bool,
-    pub(crate) gpu_enabled: bool,
     pub(crate) show_fps_overlay: bool,
+    /// Advanced section expanded (render scale, FPS, daemon service).
+    pub(crate) show_advanced: bool,
+    /// Last user-visible error (cleared on successful actions / refresh).
+    pub(crate) last_error: Option<String>,
 }
 
 impl cosmic::Application for AppModel {

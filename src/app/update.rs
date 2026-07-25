@@ -1,12 +1,16 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright 2026 IdleScreen
 
+use std::time::Duration;
+
 use cosmic::Application;
 use cosmic::cosmic_config::{self, CosmicConfigEntry};
 use cosmic::iced::futures::SinkExt;
 use cosmic::iced::platform_specific::shell::wayland::commands::popup::{destroy_popup, get_popup};
-use cosmic::iced::{Limits, Subscription, futures, window::Id};
+use cosmic::iced::{Limits, Subscription, futures, time, window::Id};
 use cosmic::prelude::*;
+
+use crate::fl;
 
 use super::{AppModel, Message};
 
@@ -14,33 +18,57 @@ impl AppModel {
     #[tracing::instrument(skip(self, message), level = "debug")]
     pub(crate) fn handle_update(&mut self, message: Message) -> Task<cosmic::Action<Message>> {
         match message {
+            Message::Surface(a) => {
+                return cosmic::task::message(cosmic::Action::Cosmic(
+                    cosmic::app::Action::Surface(a),
+                ));
+            }
             Message::SubscriptionChannel => {}
+            Message::Refresh => {
+                self.refresh_daemon_state();
+            }
             Message::UpdateConfig(config) => {
                 self.config = config;
             }
+            Message::ToggleAdvanced => {
+                self.show_advanced = !self.show_advanced;
+            }
             Message::ToggleDaemon(toggled) => {
                 if toggled {
-                    // enable --now so the unit survives logins and upgrades
                     match crate::daemon_client::start_daemon_service() {
-                        Ok(()) => self.daemon_running = true,
+                        Ok(()) => {
+                            self.daemon_running = true;
+                            self.last_error = None;
+                        }
                         Err(e) => {
                             tracing::error!("failed to start idle-daemon: {e:#}");
+                            self.last_error = Some(fl!("error-start"));
                             self.daemon_running = crate::daemon_client::is_running();
                         }
                     }
                     self.refresh_daemon_state();
-                } else {
-                    // Stop only — keep the unit *enabled* for next login.
-                    if let Err(e) = crate::daemon_client::stop_daemon_service() {
-                        tracing::error!("failed to stop idle-daemon: {e:#}");
-                    }
+                } else if let Err(e) = crate::daemon_client::stop_daemon_service() {
+                    tracing::error!("failed to stop idle-daemon: {e:#}");
+                    self.last_error = Some(fl!("error-stop"));
                     self.daemon_running = crate::daemon_client::is_running();
+                } else {
+                    self.daemon_running = crate::daemon_client::is_running();
+                    self.last_error = None;
                 }
             }
-            Message::OpenPowerSettings => {
-                let _ = std::process::Command::new("cosmic-settings")
-                    .arg("power")
-                    .spawn();
+            Message::OpenDashboard => {
+                let ok = std::process::Command::new("idlescreen")
+                    .arg("tui")
+                    .spawn()
+                    .or_else(|_| {
+                        std::process::Command::new("idle-tui").spawn()
+                    })
+                    .is_ok();
+                if !ok {
+                    self.last_error = Some(fl!("error-tui"));
+                } else {
+                    self.last_error = None;
+                }
             }
             Message::ToggleIdleEnabled(toggled) => {
                 self.local_config.idle_enabled = toggled;
@@ -59,7 +87,6 @@ impl AppModel {
                     let _ = self.local_config.save();
                 }
             }
-
             Message::ActiveSaverSelected(saver) => {
                 if saver == "Random" {
                     self.local_config.active_saver = None;
@@ -75,32 +102,17 @@ impl AppModel {
                 }
             }
             Message::DecreaseTimeout => {
-                if self.local_config.idle_timeout_mins > 1 {
-                    self.local_config.idle_timeout_mins -= 1;
-                    if crate::daemon_client::is_running() {
-                        let _ =
-                            crate::daemon_client::set_timeout(self.local_config.idle_timeout_mins);
-                    } else {
-                        let _ = self.local_config.save();
-                    }
-                }
+                self.bump_timeout(-5);
             }
             Message::IncreaseTimeout => {
-                if self.local_config.idle_timeout_mins < 120 {
-                    self.local_config.idle_timeout_mins += 1;
-                    if crate::daemon_client::is_running() {
-                        let _ =
-                            crate::daemon_client::set_timeout(self.local_config.idle_timeout_mins);
-                    } else {
-                        let _ = self.local_config.save();
-                    }
-                }
+                self.bump_timeout(5);
             }
             Message::TogglePopup => {
                 return if let Some(p) = self.popup.take() {
                     destroy_popup(p)
                 } else {
                     self.refresh_daemon_state();
+                    self.last_error = None;
 
                     if let Some(main_win_id) = self.core.main_window_id() {
                         let new_id = Id::unique();
@@ -127,12 +139,18 @@ impl AppModel {
                 let saver = self.pick_preview_saver(/* random_if_unset */ true);
                 if let Err(e) = crate::daemon_client::preview_saver(&saver) {
                     tracing::error!("preview failed for '{saver}': {e:#}");
+                    self.last_error = Some(fl!("error-preview"));
+                } else {
+                    self.last_error = None;
                 }
             }
             Message::TriggerPreview => {
                 let saver = self.pick_preview_saver(/* random_if_unset */ false);
                 if let Err(e) = crate::daemon_client::preview_saver(&saver) {
                     tracing::error!("preview failed for '{saver}': {e:#}");
+                    self.last_error = Some(fl!("error-preview"));
+                } else {
+                    self.last_error = None;
                 }
             }
             Message::ChangeRenderScale(scale) => {
@@ -152,8 +170,22 @@ impl AppModel {
         Task::none()
     }
 
+    fn bump_timeout(&mut self, delta: i32) {
+        let cur = self.local_config.idle_timeout_mins as i32;
+        let next = (cur + delta).clamp(1, 120) as u32;
+        if next == self.local_config.idle_timeout_mins {
+            return;
+        }
+        self.local_config.idle_timeout_mins = next;
+        if crate::daemon_client::is_running() {
+            let _ = crate::daemon_client::set_timeout(next);
+        } else {
+            let _ = self.local_config.save();
+        }
+    }
+
     pub(crate) fn subscription_batch(&self) -> Subscription<Message> {
-        Subscription::batch(vec![
+        let mut subs = vec![
             Subscription::run(|| {
                 cosmic::iced::stream::channel(
                     4,
@@ -166,7 +198,12 @@ impl AppModel {
             self.core()
                 .watch_config::<crate::config::Config>(Self::APP_ID)
                 .map(|update| Message::UpdateConfig(update.config)),
-        ])
+        ];
+        // Refresh live state while the popup is open.
+        if self.popup.is_some() {
+            subs.push(time::every(Duration::from_secs(2)).map(|_| Message::Refresh));
+        }
+        Subscription::batch(subs)
     }
 
     pub(crate) fn init_app(core: cosmic::Core) -> (Self, Task<cosmic::Action<Message>>) {
@@ -181,8 +218,9 @@ impl AppModel {
             local_config: crate::config::ThemeConfig::load(),
             screensavers: idle_runner::discovery::detect_screensavers(),
             daemon_running: false,
-            gpu_enabled: false,
             show_fps_overlay: false,
+            show_advanced: false,
+            last_error: None,
             popup: None,
         };
         app.refresh_daemon_state();

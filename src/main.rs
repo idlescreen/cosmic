@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright 2026 IdleScreen
 
-//! COSMIC panel applet entry point for IdleScreen (trance) screensaver settings.
+//! COSMIC panel applet entry point for IdleScreen.
 //!
 //! Talks to `idle-daemon` over D-Bus when available, or falls back to on-disk
 //! config. Mirrors idle timeout, FPS overlay, render scale, and active saver.

@@ -4,25 +4,24 @@
 use cosmic::iced::window::Id;
 
 /// Messages emitted by the application and its widgets.
-///
-/// The update loop routes daemon-affecting toggles through D-Bus when
-/// `daemon_client::is_running()` and persists [`ThemeConfig`] otherwise.
 #[derive(Debug, Clone)]
 pub enum Message {
     TogglePopup,
     PopupClosed(Id),
+    /// libcosmic surface/tooltip plumbing (COSMIC applet pattern).
+    Surface(cosmic::surface::Action),
     SubscriptionChannel,
+    Refresh,
     UpdateConfig(crate::config::Config),
     ToggleIdleEnabled(bool),
     ActiveSaverSelected(String),
     ToggleDaemon(bool),
     ToggleFpsOverlay(bool),
+    ToggleAdvanced,
     DecreaseTimeout,
     IncreaseTimeout,
-    OpenPowerSettings,
     MiddleClick,
     TriggerPreview,
+    OpenDashboard,
     ChangeRenderScale(f32),
 }
-
-// Popup lifecycle messages are handled before settings mutations in update().
