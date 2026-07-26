@@ -23,11 +23,11 @@ Shipped package name is **`idle-cosmic`** (crate may still be named `idle-applet
 
 | Role | Package |
 |------|---------|
-| Ships | COSMIC panel applet (`idlescreen-applet` binary) |
-| Requires | `idle-daemon` |
-| Soft | `idle-savers`, `idle-cli`, `idle-tui` (via install script / recommends) |
+| Ships | COSMIC panel applet (`idlescreen-applet` binary; desktop Exec) |
+| Requires | `idle-daemon`, `idle-tui` |
+| Soft | `idle-savers`, `idle-cli` (via install script / recommends) |
 
-**Provides** (transitional upgrades): `app-cosmic`, `idlescreen-applet`, `trance-applet`, `idlescreen-cosmic`.
+**Provides** (transitional package upgrades only): `app-cosmic`, `idlescreen-applet`, `trance-applet`, `idlescreen-cosmic`. Does not dual-ship legacy binary names.
 
 ## Out of scope
 

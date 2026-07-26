@@ -1,10 +1,11 @@
-/target/
-**/*.rs.bk
 .cargo/
+*.deb
+/idle
+/idle/
+# Local path dep: CI checks out idlescreen/idle here; local may be a symlink
+*.rpm
+**/*.rs.bk
+/target/
+target/
 vendor/
 vendor.tar
-*.deb
-*.rpm
-target/
-# Local path dep: CI checks out idlescreen/idle here; local may be a symlink
-/idle/

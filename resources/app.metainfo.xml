@@ -20,7 +20,6 @@
     <id>io.github.idlescreen.CosmicApplet</id>
     <binaries>
       <binary>idlescreen-applet</binary>
-      <binary>trance-applet</binary>
     </binaries>
   </provides>
   <requires>
