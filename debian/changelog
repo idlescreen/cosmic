@@ -1,3 +1,9 @@
+idle-cosmic (3.0.2-1) unstable; urgency=medium
+
+  * Align package version with product line 3.0.2 (idle-daemon D-Bus fix wave).
+
+ -- IdleScreen <jerydleuck@gmail.com>  Fri, 07 Aug 2026 17:29:56 +0200
+
 idle-cosmic (2.2.2-1) unstable; urgency=medium
 
   * Post-install: remove legacy com.system76.CosmicAppletIdle desktop/icons
