@@ -59,6 +59,9 @@ pub fn stop_daemon_service() -> Result<()> {
     }
 
     // Fallback: SIGTERM via PID file if the unit is unmanaged.
+    // Read with O_NOFOLLOW so a planted symlink cannot redirect us at a
+    // different process, and refuse to send SIGTERM to a pid whose argv0
+    // does not match idle-daemon (defense vs pidfile tampering).
     let runtime = std::env::var("XDG_RUNTIME_DIR").ok();
     for name in ["idle-daemon.pid", "trance-daemon.pid"] {
         let pid_path = if let Some(ref runtime_dir) = runtime {
@@ -66,10 +69,13 @@ pub fn stop_daemon_service() -> Result<()> {
         } else {
             std::env::temp_dir().join(name)
         };
-        if let Ok(pid_str) = std::fs::read_to_string(&pid_path)
-            && let Ok(pid) = pid_str.trim().parse::<i32>()
-        {
-            // SAFETY: kill with SIGTERM on a process we believe is the idle daemon.
+        let pid = crate::pidfile::read_pidfile_safely(&pid_path);
+        if let Some(pid) = pid {
+            if !crate::pidfile::pid_targets_idle_daemon(pid) {
+                tracing::warn!("refusing to SIGTERM pid {pid} — not idle-daemon");
+                continue;
+            }
+            // SAFETY: kill with SIGTERM on a process we verified is idle-daemon.
             unsafe {
                 libc::kill(pid, libc::SIGTERM);
             }

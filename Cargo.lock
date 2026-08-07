@@ -2533,7 +2533,7 @@ dependencies = [
 
 [[package]]
 name = "idle-applet"
-version = "2.2.1"
+version = "2.2.2"
 dependencies = [
  "anyhow",
  "i18n-embed",
@@ -2558,7 +2558,7 @@ dependencies = [
 
 [[package]]
 name = "idle-runner"
-version = "2.3.2"
+version = "2.3.3"
 dependencies = [
  "bytemuck",
  "crossterm",
@@ -2572,6 +2572,7 @@ dependencies = [
  "notify",
  "sysinfo",
  "thiserror 2.0.19",
+ "tokio",
  "tracing",
  "tracing-subscriber",
  "wgpu",
