@@ -1,3 +1,6 @@
+> 🌐 **Organization Website:** [idlescreen.github.io](https://idlescreen.github.io)
+> 
+
 # idle-cosmic
 
 COSMIC Desktop Environment **panel applet** for IdleScreen.
