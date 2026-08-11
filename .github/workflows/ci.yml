@@ -29,6 +29,7 @@ jobs:
           libwayland-dev libxkbcommon-dev libudev-dev \
           libdbus-1-dev pkg-config libssl-dev \
           libfontconfig1-dev libfreetype6-dev \
+          libclang-dev clang \
           ffmpeg
 
     - name: Symlink sibling `idle/` checkout (path-dep)
