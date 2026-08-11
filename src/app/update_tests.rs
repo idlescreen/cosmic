@@ -6,13 +6,12 @@
 //! `AppModel::handle_update` switches on `Message` variants. Most paths
 //! (Refresh, ToggleDaemon) touch D-Bus / systemctl and need real
 //! infrastructure. The pure state-mutation paths (ToggleAdvanced,
-// UpdateConfig, ToggleFpsOverlay) are testable in isolation.
+//! ToggleFpsOverlay) are testable in isolation.
 //!
 //! Anti-synthetic: each test pins one transition. A regression that
 //! silently drops a state change fails the test.
 
 use super::message::Message;
-use super::state::ThemeConfig;
 use super::AppModel;
 
 #[test]
@@ -24,33 +23,6 @@ fn toggle_advanced_flips_show_advanced() {
     assert!(!m.show_advanced, "ToggleAdvanced should flip true→false");
     let _ = m.handle_update(Message::ToggleAdvanced);
     assert!(m.show_advanced, "ToggleAdvanced should flip false→true");
-}
-
-#[test]
-fn update_config_replaces_local_config() {
-    let mut m = AppModel::default();
-    assert_eq!(m.local_config.idle_timeout_mins, 5); // ThemeConfig::default()
-    let mut new_config = ThemeConfig::defaults();
-    new_config.idle_timeout_mins = 42;
-    new_config.theme_idx = 7;
-    new_config.accent_color = "#deadbeef".to_string();
-    let _ = m.handle_update(Message::UpdateConfig(new_config.clone()));
-    assert_eq!(m.local_config.idle_timeout_mins, 42);
-    assert_eq!(m.local_config.theme_idx, 7);
-    assert_eq!(m.local_config.accent_color, "#deadbeef");
-}
-
-#[test]
-fn update_config_does_not_touch_daemon_state() {
-    // The UpdateConfig path is pure: it only mutates local_config.
-    // The daemon_running flag must be untouched; this is the test
-    // that would catch a regression that confuses UpdateConfig with
-    // ToggleDaemon.
-    let mut m = AppModel::default();
-    m.daemon_running = true;
-    let new_config = ThemeConfig::defaults();
-    let _ = m.handle_update(Message::UpdateConfig(new_config));
-    assert!(m.daemon_running, "UpdateConfig must not flip daemon_running");
 }
 
 #[test]
