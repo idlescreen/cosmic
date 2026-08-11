@@ -7,6 +7,8 @@ mod helpers;
 mod message;
 mod state;
 mod update;
+#[cfg(test)]
+mod update_tests;
 mod view;
 
 use cosmic::iced::window::Id;
