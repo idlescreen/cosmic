@@ -28,6 +28,8 @@ version = "0.16"
 features = ["fluent-system", "desktop-requester"]
 
 [dependencies.libcosmic]
+# Pinned to a commit SHA (not a tag/branch) for reproducible builds; see
+# LIBCOSMIC_PIN.md for the rationale, risks, and bump procedure.
 git = "https://github.com/pop-os/libcosmic.git"
 rev = "ef162b8e"
 features = [
