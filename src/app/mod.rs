@@ -16,10 +16,6 @@ use cosmic::prelude::*;
 
 pub use message::Message;
 
-/// Desktop / hicolor theme icon name (shipped as scalable SVG).
-/// Panel button embeds the SVG; this name is for the `.desktop` `Icon=` field.
-#[allow(dead_code)]
-pub(crate) const ICON_NAME: &str = "io.github.idlescreen.CosmicApplet-symbolic";
 
 #[derive(Default)]
 pub struct AppModel {

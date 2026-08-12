@@ -163,7 +163,13 @@ pub fn preview_saver(name: &str) -> Result<()> {
     }
 
     for bin in ["idle-daemon", "idlescreen-daemon", "trance-daemon"] {
-        if Command::new(bin).args(["run-plugin", name]).spawn().is_ok() {
+        if let Ok(mut child) = Command::new(bin).args(["run-plugin", name]).spawn() {
+            std::thread::sleep(Duration::from_millis(200));
+            if let Ok(Some(status)) = child.try_wait() {
+                if !status.success() {
+                    bail!("preview process exited early with status: {}", status);
+                }
+            }
             return Ok(());
         }
     }
@@ -206,6 +212,9 @@ pub fn open_tui_dashboard() -> bool {
     ];
 
     for (term, term_flags) in terminals {
+        if !Command::new("which").arg(term).output().map(|o| o.status.success()).unwrap_or(false) {
+            continue;
+        }
         for prog in programs {
             let mut cmd = Command::new(term);
             cmd.args(*term_flags);
