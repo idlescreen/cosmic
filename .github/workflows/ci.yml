@@ -11,18 +11,16 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - runner: ubuntu-24.04
-            deps: ""
-          - runner: ubuntu-24.04
-            deps: libdbus-1-dev pkg-config libssl-dev
+    runs-on: ubuntu-24.04
 
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+    - name: Checkout idle engine (path deps)
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      with:
+        repository: idlescreen/idle
+        path: idle
 
     - name: Install build deps
       run: |
@@ -35,13 +33,13 @@ jobs:
           libclang-dev clang \
           ffmpeg
 
-    - name: Symlink sibling `idle/` checkout (path-dep)
+    - name: Verify sibling `idle/` checkout (path-dep)
       run: |
-        # `idle-cosmic` declares a path-dep on `idle/`. The upstream
-        # checkouts split `idle/` into its own repo, so symlink for
-        # the local Cargo workspace to resolve.
-        if [ -d idle ] && [ ! -e idle/Cargo.toml ]; then
-          echo "::error::idle/ is a non-Cargo directory; expected sibling checkout"
+        # `idle-cosmic` declares path-deps on `idle/crates/*`. The
+        # `actions/checkout` step above materializes the engine at idle/;
+        # fail fast with a clear message if it is missing.
+        if [ ! -f idle/Cargo.toml ]; then
+          echo "::error::idle/Cargo.toml missing — the idle engine checkout step failed"
           exit 1
         fi
 
