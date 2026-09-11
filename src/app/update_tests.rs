@@ -11,8 +11,8 @@
 //! Anti-synthetic: each test pins one transition. A regression that
 //! silently drops a state change fails the test.
 
-use super::message::Message;
 use super::AppModel;
+use super::message::Message;
 
 #[test]
 fn toggle_advanced_flips_show_advanced() {

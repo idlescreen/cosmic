@@ -16,7 +16,6 @@ use cosmic::prelude::*;
 
 pub use message::Message;
 
-
 #[derive(Default)]
 pub struct AppModel {
     pub(crate) core: cosmic::Core,

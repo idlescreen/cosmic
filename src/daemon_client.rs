@@ -212,7 +212,12 @@ pub fn open_tui_dashboard() -> bool {
     ];
 
     for (term, term_flags) in terminals {
-        if !Command::new("which").arg(term).output().map(|o| o.status.success()).unwrap_or(false) {
+        if !Command::new("which")
+            .arg(term)
+            .output()
+            .map(|o| o.status.success())
+            .unwrap_or(false)
+        {
             continue;
         }
         for prog in programs {

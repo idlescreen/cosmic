@@ -178,9 +178,7 @@ impl AppModel {
         }
 
         // 4 columns → ~3 rows for 11 items; keep height modest.
-        cosmic::iced::widget::scrollable(grid)
-            .height(120.0)
-            .into()
+        cosmic::iced::widget::scrollable(grid).height(120.0).into()
     }
 }
 
