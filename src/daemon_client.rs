@@ -165,10 +165,10 @@ pub fn preview_saver(name: &str) -> Result<()> {
     for bin in ["idle-daemon", "idlescreen-daemon", "trance-daemon"] {
         if let Ok(mut child) = Command::new(bin).args(["run-plugin", name]).spawn() {
             std::thread::sleep(Duration::from_millis(200));
-            if let Ok(Some(status)) = child.try_wait() {
-                if !status.success() {
-                    bail!("preview process exited early with status: {}", status);
-                }
+            if let Ok(Some(status)) = child.try_wait()
+                && !status.success()
+            {
+                bail!("preview process exited early with status: {}", status);
             }
             return Ok(());
         }
