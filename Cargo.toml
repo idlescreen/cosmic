@@ -16,7 +16,6 @@ path = "src/main.rs"
 anyhow = "1"
 i18n-embed-fl = "0.10"
 rust-embed = "8.11"
-tokio = { version = "1.52", features = ["full"] }
 libc = "0.2"
 # Local path dep: CI checks out idlescreen/idle here; local may be a symlink to ../idle
 idle-dbus = { path = "idle/crates/idle-dbus" }

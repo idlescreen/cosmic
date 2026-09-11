@@ -2541,7 +2541,6 @@ dependencies = [
  "libc",
  "libcosmic",
  "rust-embed",
- "tokio",
  "tracing",
  "tracing-subscriber",
 ]
