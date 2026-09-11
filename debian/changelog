@@ -1,3 +1,11 @@
+idle-cosmic (3.2.0-1) unstable; urgency=medium
+
+  * CI now checks out the idle engine for path deps; dead matrix removed.
+  * pkexec install passes IDLE_REQUIRE_MANIFEST_SIGNATURE=1.
+  * Dropped unused tokio dep; clippy -D warnings clean.
+
+ -- IdleScreen <jerydleuck@gmail.com>  Fri, 11 Sep 2026 10:00:00 +0000
+
 idle-cosmic (3.0.2-1) unstable; urgency=medium
 
   * Align package version with product line 3.0.2 (idle-daemon D-Bus fix wave).
