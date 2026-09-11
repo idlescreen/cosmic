@@ -88,3 +88,21 @@ if we want to keep the git URL but redirect to a vendored fork.
 
 - `Cargo.toml` — current pin
 - `.github/workflows/ci.yml` — CI matrix that gates bumps
+## Advisory status (2026-09-11)
+
+`cargo audit` reports two `unsound` transitive deps, both pinned *by
+libcosmic's own tree* — bumping `rev` does not clear them (verified on
+`a401af8`):
+
+- `lru 0.16.4` — RUSTSEC-2026-0253 (UAF in `LruCache::pop()`, needs a
+  panic inside eviction to trigger). Reachable via `cryoglyph` text
+  shaping. Exposure: low — the applet renders its own static
+  icon/tooltip; no attacker-controlled text shapes.
+- `memmap2 0.8.0` — RUSTSEC-2026-0186 (unchecked pointer offset) via
+  `xkbcommon 0.7`. Exposure: low — consumes system keymaps, not a
+  hostile input boundary.
+
+A straight `rev` bump to `a401af8` also breaks `cosmic::app::Action::
+Surface` — the applet needs API porting to move pins. Revisit when
+upstream (iced/xkbcommon/cryoglyph) releases the fixes; the audit
+finding stays open but is not locally actionable.
