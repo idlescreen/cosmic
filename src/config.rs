@@ -21,7 +21,6 @@ pub struct ThemeConfig {
     pub theme_idx: usize,
     pub active_saver: Option<String>,
     pub idle_enabled: bool,
-    pub gpu_enabled: bool,
     pub show_fps_overlay: bool,
     pub render_scale: f32,
 }
@@ -35,7 +34,6 @@ impl ThemeConfig {
             theme_idx: 0,
             active_saver: Some("beams".to_string()),
             idle_enabled: true,
-            gpu_enabled: false,
             show_fps_overlay: false,
             render_scale: 1.0,
         }
@@ -105,10 +103,6 @@ impl ThemeConfig {
                     config.idle_enabled = b;
                 }
             }
-            "gpu_enabled" => {
-                // GPU path is not exposed from the applet; keep off.
-                config.gpu_enabled = false;
-            }
             "show_fps_overlay" => {
                 if let Ok(b) = val.parse::<bool>() {
                     config.show_fps_overlay = b;
@@ -156,7 +150,6 @@ impl ThemeConfig {
                  theme_idx: {}\n\
                  active_saver: \"{}\"\n\
                  idle_enabled: {}\n\
-                 gpu_enabled: false\n\
                  show_fps_overlay: {}\n\
                  render_scale: {}\n",
                 self.accent_color,
@@ -183,7 +176,6 @@ mod tests {
         assert_eq!(d.idle_timeout_mins, 5);
         assert_eq!(d.active_saver.as_deref(), Some("beams"));
         assert!(d.idle_enabled);
-        assert!(!d.gpu_enabled);
         assert!((d.render_scale - 1.0).abs() < f32::EPSILON);
     }
 
@@ -208,8 +200,6 @@ unknown_key: ignored
         assert!(!c.idle_enabled);
         assert!(c.show_fps_overlay);
         assert!((c.render_scale - 0.5).abs() < f32::EPSILON);
-        // gpu_enabled is forced off even if present
-        assert!(!c.gpu_enabled);
     }
 
     #[test]
