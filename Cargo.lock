@@ -2531,7 +2531,7 @@ dependencies = [
 
 [[package]]
 name = "idle-applet"
-version = "3.2.1"
+version = "3.2.2"
 dependencies = [
  "anyhow",
  "i18n-embed",

@@ -73,7 +73,9 @@ impl ThemeConfig {
         if line.is_empty() || line.starts_with('#') {
             return;
         }
-        let Some(idx) = line.find(':') else {
+        // Accept `=` too — hand-edited files commonly use it and the daemon
+        // applies it, so ignoring it here would show stale defaults.
+        let Some(idx) = line.find([':', '=']) else {
             return;
         };
         let key = line[..idx].trim();
@@ -218,7 +220,7 @@ fn merge_preserving(existing: &str, fields: &mut Vec<(&'static str, String)>) ->
             let owned = !in_section
                 && !t.is_empty()
                 && !t.starts_with('#')
-                && t.find(':').is_some_and(|idx| {
+                && t.find([':', '=']).is_some_and(|idx| {
                     let key = t[..idx].trim();
                     if let Some(pos) = fields.iter().position(|(k, _)| *k == key) {
                         let (k, v) = fields.remove(pos);
