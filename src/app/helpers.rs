@@ -17,7 +17,7 @@ impl AppModel {
         if crate::daemon_client::is_running() {
             let _ = crate::daemon_client::set_timeout(next);
         } else {
-            let _ = self.local_config.save();
+            let _ = self.local_config.save_field("idle_timeout_mins");
         }
     }
 

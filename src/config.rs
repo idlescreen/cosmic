@@ -22,7 +22,8 @@ pub struct ThemeConfig {
     pub active_saver: Option<String>,
     pub idle_enabled: bool,
     pub show_fps_overlay: bool,
-    pub render_scale: f32,
+    /// `None` = auto (`null` on disk); the slider displays 1.0 for it.
+    pub render_scale: Option<f32>,
 }
 
 impl ThemeConfig {
@@ -35,7 +36,7 @@ impl ThemeConfig {
             active_saver: Some("beams".to_string()),
             idle_enabled: true,
             show_fps_overlay: false,
-            render_scale: 1.0,
+            render_scale: None,
         }
     }
 
@@ -109,8 +110,10 @@ impl ThemeConfig {
                 }
             }
             "render_scale" => {
-                if let Ok(s) = val.parse::<f32>() {
-                    config.render_scale = s;
+                if val.is_empty() || val.eq_ignore_ascii_case("null") {
+                    config.render_scale = None;
+                } else if let Ok(s) = val.parse::<f32>() {
+                    config.render_scale = Some(s);
                 }
             }
             _ => {}
@@ -135,96 +138,108 @@ impl ThemeConfig {
         Self::defaults()
     }
 
-    pub fn save(&self) -> std::io::Result<()> {
-        // Always write to primary idle path so settings converge with the daemon.
-        if let Some(path) = Self::get_config_path() {
-            if let Some(parent) = path.parent() {
-                fs::create_dir_all(parent)?;
-            }
-            let active_str = self.active_saver.as_deref().unwrap_or("none");
-            let content = format!(
-                "# IdleScreen themes and settings\n\
-                 accent_color: \"{}\"\n\
-                 # dark_mode is auto-detected from system\n\
-                 idle_timeout_mins: {}\n\
-                 theme_idx: {}\n\
-                 active_saver: \"{}\"\n\
-                 idle_enabled: {}\n\
-                 show_fps_overlay: {}\n\
-                 render_scale: {}\n",
-                self.accent_color,
-                self.idle_timeout_mins,
-                self.theme_idx,
-                active_str,
-                self.idle_enabled,
-                self.show_fps_overlay,
+    /// Keys this applet may write — only fields its UI can change. Every
+    /// other line (`accent_color`, `theme_idx`, `theme`,
+    /// `strict_control`, `[saver]` params, comments, unknowns) is foreign
+    /// and passes through merge untouched.
+    fn rendered_fields(&self) -> Vec<(&'static str, String)> {
+        let active_str = self.active_saver.as_deref().unwrap_or("none");
+        vec![
+            ("idle_timeout_mins", self.idle_timeout_mins.to_string()),
+            ("active_saver", format!("\"{active_str}\"")),
+            ("idle_enabled", self.idle_enabled.to_string()),
+            ("show_fps_overlay", self.show_fps_overlay.to_string()),
+            (
+                "render_scale",
                 self.render_scale
-            );
-            fs::write(&path, content)?;
-        }
-        Ok(())
+                    .map(|s| s.to_string())
+                    .unwrap_or_else(|| "null".to_string()),
+            ),
+        ]
     }
+
+    fn field(&self, key: &str) -> Option<(&'static str, String)> {
+        self.rendered_fields().into_iter().find(|(k, _)| *k == key)
+    }
+
+    /// Persist one owned key, merged into the existing file. Writing a
+    /// single key means another tool's newer values — and our own
+    /// possibly-stale fields — are never flattened back over the file.
+    pub fn save_field(&self, key: &str) -> std::io::Result<()> {
+        let Some((k, v)) = self.field(key) else {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidInput,
+                format!("not an applet-owned config key: {key}"),
+            ));
+        };
+        let Some(path) = Self::get_config_path() else {
+            return Ok(());
+        };
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent)?;
+        }
+        // Serialize read-modify-write against other writers (daemon, TUI).
+        let lock = std::fs::OpenOptions::new()
+            .create(true)
+            .write(true)
+            .truncate(false)
+            .open(path.with_file_name("config.yaml.lock"))?;
+        lock.lock()?;
+        let existing = fs::read_to_string(&path).unwrap_or_default();
+        let body = merge_preserving(&existing, &mut vec![(k, v)]);
+        // Atomic-ish publish: tmp file + rename (matches daemon save).
+        let tmp = path.with_file_name(format!("config.yaml.{}.tmp", std::process::id()));
+        fs::write(&tmp, body)?;
+        fs::rename(&tmp, &path).inspect_err(|_| {
+            let _ = fs::remove_file(&tmp);
+        })
+    }
+}
+
+/// Merge owned `key: value` fields into existing config text. Foreign
+/// lines — comments, unknown keys, everything under `[section]` headers —
+/// pass through unchanged. `fields` is drained; leftovers append at the end.
+fn merge_preserving(existing: &str, fields: &mut Vec<(&'static str, String)>) -> String {
+    let mut body = String::new();
+    if existing.trim().is_empty() {
+        body.push_str(
+            "# IdleScreen themes and settings\n# dark_mode is auto-detected from system\n",
+        );
+    } else {
+        let mut in_section = false;
+        for line in existing.lines() {
+            let t = line.trim();
+            if t.starts_with('[') && t.ends_with(']') {
+                in_section = true;
+                body.push_str(line);
+                body.push('\n');
+                continue;
+            }
+            let owned = !in_section
+                && !t.is_empty()
+                && !t.starts_with('#')
+                && t.find(':').is_some_and(|idx| {
+                    let key = t[..idx].trim();
+                    if let Some(pos) = fields.iter().position(|(k, _)| *k == key) {
+                        let (k, v) = fields.remove(pos);
+                        body.push_str(&format!("{k}: {v}\n"));
+                        true
+                    } else {
+                        false
+                    }
+                });
+            if !owned {
+                body.push_str(line);
+                body.push('\n');
+            }
+        }
+    }
+    for (k, v) in fields.drain(..) {
+        body.push_str(&format!("{k}: {v}\n"));
+    }
+    body
 }
 
 #[cfg(test)]
-mod tests {
-    use super::ThemeConfig;
-
-    #[test]
-    fn defaults_are_sane() {
-        let d = ThemeConfig::defaults();
-        assert_eq!(d.idle_timeout_mins, 5);
-        assert_eq!(d.active_saver.as_deref(), Some("beams"));
-        assert!(d.idle_enabled);
-        assert!((d.render_scale - 1.0).abs() < f32::EPSILON);
-    }
-
-    #[test]
-    fn parses_known_keys() {
-        let yaml = r##"
-# comment
-accent_color: "#FF0000"
-idle_timeout_mins: 15
-theme_idx: 2
-active_saver: "cosmos"
-idle_enabled: false
-show_fps_overlay: true
-render_scale: 0.5
-unknown_key: ignored
-"##;
-        let c = ThemeConfig::from_yaml_content(yaml);
-        assert_eq!(c.accent_color, "#FF0000");
-        assert_eq!(c.idle_timeout_mins, 15);
-        assert_eq!(c.theme_idx, 2);
-        assert_eq!(c.active_saver.as_deref(), Some("cosmos"));
-        assert!(!c.idle_enabled);
-        assert!(c.show_fps_overlay);
-        assert!((c.render_scale - 0.5).abs() < f32::EPSILON);
-    }
-
-    #[test]
-    fn active_saver_none_clears() {
-        let c = ThemeConfig::from_yaml_content("active_saver: none\n");
-        assert_eq!(c.active_saver, None);
-        let c2 = ThemeConfig::from_yaml_content("active_saver: \"\"\n");
-        assert_eq!(c2.active_saver, None);
-    }
-
-    #[test]
-    fn bad_values_keep_defaults() {
-        let c = ThemeConfig::from_yaml_content(
-            "idle_timeout_mins: not-a-number\nrender_scale: xyz\nidle_enabled: maybe\n",
-        );
-        let d = ThemeConfig::defaults();
-        assert_eq!(c.idle_timeout_mins, d.idle_timeout_mins);
-        assert!((c.render_scale - d.render_scale).abs() < f32::EPSILON);
-        assert_eq!(c.idle_enabled, d.idle_enabled);
-    }
-
-    #[test]
-    fn quoted_and_unquoted_values() {
-        let c = ThemeConfig::from_yaml_content("active_saver: 'storm'\naccent_color: #00FF00\n");
-        assert_eq!(c.active_saver.as_deref(), Some("storm"));
-        assert_eq!(c.accent_color, "#00FF00");
-    }
-}
+#[path = "config_tests.rs"]
+mod tests;

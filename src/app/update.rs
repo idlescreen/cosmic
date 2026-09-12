@@ -73,7 +73,7 @@ impl AppModel {
                 if crate::daemon_client::is_running() {
                     let _ = crate::daemon_client::set_idle_enabled(toggled);
                 } else {
-                    let _ = self.local_config.save();
+                    let _ = self.local_config.save_field("idle_enabled");
                 }
             }
             Message::ToggleFpsOverlay(toggled) => {
@@ -82,7 +82,7 @@ impl AppModel {
                     let _ = crate::daemon_client::set_show_fps_overlay(toggled);
                 } else {
                     self.local_config.show_fps_overlay = toggled;
-                    let _ = self.local_config.save();
+                    let _ = self.local_config.save_field("show_fps_overlay");
                 }
             }
             Message::ActiveSaverSelected(saver) => {
@@ -96,7 +96,7 @@ impl AppModel {
                         self.local_config.active_saver.as_deref(),
                     );
                 } else {
-                    let _ = self.local_config.save();
+                    let _ = self.local_config.save_field("active_saver");
                 }
             }
             Message::DecreaseTimeout => {
@@ -152,11 +152,11 @@ impl AppModel {
                 }
             }
             Message::ChangeRenderScale(scale) => {
-                self.local_config.render_scale = scale;
+                self.local_config.render_scale = Some(scale);
                 if crate::daemon_client::is_running() {
                     let _ = crate::daemon_client::set_render_scale(scale);
                 } else {
-                    let _ = self.local_config.save();
+                    let _ = self.local_config.save_field("render_scale");
                 }
             }
             Message::PopupClosed(id) => {

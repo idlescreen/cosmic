@@ -18,9 +18,8 @@ impl AppModel {
                     Some(status.active_saver)
                 };
                 self.show_fps_overlay = status.show_fps_overlay;
-                if let Ok(scale) = status.render_scale.parse::<f32>() {
-                    self.local_config.render_scale = scale;
-                }
+                // "null"/unparseable = auto scale → None.
+                self.local_config.render_scale = status.render_scale.parse::<f32>().ok();
             }
             if let Ok(savers) = crate::daemon_client::list_savers() {
                 self.screensavers = savers;

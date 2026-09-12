@@ -95,11 +95,11 @@ impl AppModel {
         if self.show_advanced {
             let scale_val = widget::text(fl!(
                 "scale-percent",
-                pct = ((self.local_config.render_scale * 100.0).round() as u32)
+                pct = ((self.local_config.render_scale.unwrap_or(1.0) * 100.0).round() as u32)
             ));
             let scale_slider = cosmic::iced::widget::Slider::new(
                 0.25..=1.0,
-                self.local_config.render_scale,
+                self.local_config.render_scale.unwrap_or(1.0),
                 Message::ChangeRenderScale,
             )
             .step(0.05_f32);
