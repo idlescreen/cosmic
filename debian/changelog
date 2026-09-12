@@ -1,3 +1,9 @@
+idle-cosmic (3.2.3-1) unstable; urgency=medium
+
+  * Recommend idle-saver-aurora so fresh COSMIC installs pull it in.
+
+ -- IdleScreen <jerydleuck@gmail.com>  Sat, 12 Sep 2026 19:30:00 +0000
+
 idle-cosmic (3.2.0-1) unstable; urgency=medium
 
   * CI now checks out the idle engine for path deps; dead matrix removed.
