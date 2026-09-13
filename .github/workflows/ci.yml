@@ -16,7 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
-    - name: Checkout idle engine (path deps)
+    - name: Checkout runtime engine (path deps)
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         repository: idlescreen/runtime
@@ -35,11 +35,11 @@ jobs:
 
     - name: Verify sibling `runtime/` checkout (path-dep)
       run: |
-        # `idle-cosmic` declares path-deps on `idle/crates/*`. The
+        # `idle-cosmic` declares path-deps on `runtime/crates/*`. The
         # `actions/checkout` step above materializes the engine at runtime/;
         # fail fast with a clear message if it is missing.
-        if [ ! -f idle/Cargo.toml ]; then
-          echo "::error::runtime/Cargo.toml missing — the idle engine checkout step failed"
+        if [ ! -f runtime/Cargo.toml ]; then
+          echo "::error::runtime/Cargo.toml missing — the runtime engine checkout step failed"
           exit 1
         fi
 

@@ -5,7 +5,7 @@ version = "3.2.3"
 edition = "2024"
 license = "Apache-2.0"
 description = "IdleScreen for COSMIC — product package (applet + pulls daemon and recommended savers)"
-repository = "https://github.com/idlescreen/runtime-cosmic"
+repository = "https://github.com/idlescreen/cosmic"
 publish = false
 
 [[bin]]
