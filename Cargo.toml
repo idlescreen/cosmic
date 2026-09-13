@@ -52,6 +52,11 @@ features = [
 # (`idle-daemon`), with recommended screensaver plugins (`idle-saver-*`).
 # ---------------------------------------------------------------------------
 
+[package.metadata.cargo-machete]
+# libcosmic is imported under its crate name `cosmic`; machete cannot map
+# the package→crate rename and reports it as unused. It is used everywhere.
+ignored = ["libcosmic"]
+
 [package.metadata.deb]
 name = "idle-cosmic"
 changelog = "debian/changelog"
