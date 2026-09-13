@@ -22,9 +22,9 @@ __pycache__/
 # ==========================================
 .cargo/
 *.deb
-/idle
-/idle/
-# Local path dep: CI checks out idlescreen/idle here; local may be a symlink
+/runtime
+/runtime/
+# Local path dep: CI checks out idlescreen/runtime here; local may be a symlink
 *.rpm
 vendor/
 vendor.tar

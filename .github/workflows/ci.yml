@@ -19,8 +19,8 @@ jobs:
     - name: Checkout idle engine (path deps)
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
-        repository: idlescreen/idle
-        path: idle
+        repository: idlescreen/runtime
+        path: runtime
 
     - name: Install build deps
       run: |
@@ -33,13 +33,13 @@ jobs:
           libclang-dev clang \
           ffmpeg
 
-    - name: Verify sibling `idle/` checkout (path-dep)
+    - name: Verify sibling `runtime/` checkout (path-dep)
       run: |
         # `idle-cosmic` declares path-deps on `idle/crates/*`. The
-        # `actions/checkout` step above materializes the engine at idle/;
+        # `actions/checkout` step above materializes the engine at runtime/;
         # fail fast with a clear message if it is missing.
         if [ ! -f idle/Cargo.toml ]; then
-          echo "::error::idle/Cargo.toml missing — the idle engine checkout step failed"
+          echo "::error::runtime/Cargo.toml missing — the idle engine checkout step failed"
           exit 1
         fi
 

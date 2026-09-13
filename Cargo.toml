@@ -5,7 +5,7 @@ version = "3.2.3"
 edition = "2024"
 license = "Apache-2.0"
 description = "IdleScreen for COSMIC — product package (applet + pulls daemon and recommended savers)"
-repository = "https://github.com/idlescreen/idle-cosmic"
+repository = "https://github.com/idlescreen/runtime-cosmic"
 publish = false
 
 [[bin]]
@@ -17,9 +17,9 @@ anyhow = "1"
 i18n-embed-fl = "0.10"
 rust-embed = "8.11"
 libc = "0.2"
-# Local path dep: CI checks out idlescreen/idle here; local may be a symlink to ../idle
-idle-dbus = { path = "idle/crates/idle-dbus" }
-idle-runner = { path = "idle/idle-runner" }
+# Local path dep: CI checks out idlescreen/runtime here; local may be a symlink to ../runtime
+idle-dbus = { path = "runtime/crates/idle-dbus" }
+idle-runner = { path = "runtime/idle-runner" }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
 
