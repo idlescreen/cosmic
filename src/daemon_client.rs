@@ -2,88 +2,26 @@
 // Copyright 2026 IdleScreen
 
 //! D-Bus / systemd helpers for talking to `idle-daemon` from the panel applet.
+//! Unit management lives in `idle_dbus::service` (shared with cli/tui).
 
 use std::process::Command;
-use std::thread;
 use std::time::Duration;
 
 use anyhow::{Context, Result, bail};
-use idle_dbus::{DaemonStatus, TranceClient, daemon_available};
+use idle_dbus::{DaemonStatus, TranceClient, daemon_available, service};
 
 pub fn is_running() -> bool {
     daemon_available()
 }
 
 /// Start the user unit and enable it so it returns after login/upgrades.
-///
-/// Falls back to spawning `idle-daemon daemon` only if systemctl is unusable
-/// (unusual on a COSMIC session). Legacy `trance-daemon` binary is tried last.
 pub fn start_daemon_service() -> Result<()> {
-    for unit in ["idle-daemon.service", "trance-daemon.service"] {
-        let status = Command::new("systemctl")
-            .args(["--user", "enable", "--now", unit])
-            .status()
-            .with_context(|| format!("systemctl --user enable --now {unit}"))?;
-
-        if status.success() {
-            wait_until_running(Duration::from_secs(3))?;
-            return Ok(());
-        }
-        tracing::warn!(
-            "systemctl enable --now {unit} failed (exit {:?})",
-            status.code()
-        );
-    }
-
-    tracing::warn!("systemctl enable --now failed; trying direct spawn");
-    for bin in ["idle-daemon", "idlescreen-daemon", "trance-daemon"] {
-        if Command::new(bin).arg("daemon").spawn().is_ok() {
-            wait_until_running(Duration::from_secs(3))?;
-            return Ok(());
-        }
-    }
-    bail!("could not start idle-daemon via systemctl or direct spawn")
+    service::start_daemon_service().context("could not start idle-daemon")
 }
 
 /// Stop the running user unit (does **not** disable — keeps login autostart).
 pub fn stop_daemon_service() -> Result<()> {
-    for unit in ["idle-daemon.service", "trance-daemon.service"] {
-        let status = Command::new("systemctl")
-            .args(["--user", "stop", unit])
-            .status()
-            .with_context(|| format!("systemctl --user stop {unit}"))?;
-
-        if status.success() {
-            return Ok(());
-        }
-    }
-
-    // Fallback: SIGTERM via PID file if the unit is unmanaged.
-    // Read with O_NOFOLLOW so a planted symlink cannot redirect us at a
-    // different process, and refuse to send SIGTERM to a pid whose argv0
-    // does not match idle-daemon (defense vs pidfile tampering).
-    let runtime = std::env::var("XDG_RUNTIME_DIR").ok();
-    for name in ["idle-daemon.pid", "trance-daemon.pid"] {
-        let pid_path = if let Some(ref runtime_dir) = runtime {
-            std::path::PathBuf::from(runtime_dir).join(name)
-        } else {
-            std::env::temp_dir().join(name)
-        };
-        let pid = crate::pidfile::read_pidfile_safely(&pid_path);
-        if let Some(pid) = pid {
-            if !crate::pidfile::pid_targets_idle_daemon(pid) {
-                tracing::warn!("refusing to SIGTERM pid {pid} — not idle-daemon");
-                continue;
-            }
-            // SAFETY: kill with SIGTERM on a process we verified is idle-daemon.
-            unsafe {
-                libc::kill(pid, libc::SIGTERM);
-            }
-            return Ok(());
-        }
-    }
-
-    bail!("could not stop idle-daemon via systemctl or PID file")
+    service::stop_daemon_service().context("could not stop idle-daemon")
 }
 
 #[tracing::instrument]
@@ -174,21 +112,6 @@ pub fn preview_saver(name: &str) -> Result<()> {
         }
     }
     bail!("could not spawn idle-daemon run-plugin for preview")
-}
-
-fn wait_until_running(budget: Duration) -> Result<()> {
-    let deadline = std::time::Instant::now() + budget;
-    while std::time::Instant::now() < deadline {
-        if is_running() {
-            return Ok(());
-        }
-        thread::sleep(Duration::from_millis(100));
-    }
-    if is_running() {
-        Ok(())
-    } else {
-        bail!("idle-daemon did not become reachable on the session bus within {budget:?}")
-    }
 }
 
 /// Launch the IdleScreen TUI in a terminal (requires a real TTY).

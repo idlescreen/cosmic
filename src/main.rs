@@ -12,7 +12,6 @@ mod app;
 mod config;
 mod daemon_client;
 mod i18n;
-mod pidfile;
 
 fn init_tracing() {
     use tracing_subscriber::EnvFilter;
