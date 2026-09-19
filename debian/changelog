@@ -1,3 +1,11 @@
+idle-cosmic (3.2.5-1) unstable; urgency=medium
+
+  * Replace thiserror/anyhow with in-tree error handling; fix README
+    status instructions (idlescreen cosmic runs the panel applet, not a
+    status probe).
+
+ -- IdleScreen <jerydleuck@gmail.com>  Sun, 14 Sep 2026 10:00:00 +0000
+
 idle-cosmic (3.2.3-1) unstable; urgency=medium
 
   * Recommend idle-saver-aurora so fresh COSMIC installs pull it in.
