@@ -15,7 +15,6 @@ use crate::fl;
 use super::{AppModel, Message};
 
 impl AppModel {
-    #[tracing::instrument(skip(self, message), level = "debug")]
     pub(crate) fn handle_update(&mut self, message: Message) -> Task<cosmic::Action<Message>> {
         match message {
             Message::Surface(a) => {
@@ -41,14 +40,14 @@ impl AppModel {
                             self.last_error = None;
                         }
                         Err(e) => {
-                            tracing::error!("failed to start idle-daemon: {e:#}");
+                            idle_log::error!("failed to start idle-daemon: {e:#}");
                             self.last_error = Some(fl!("error-start"));
                             self.daemon_running = crate::daemon_client::is_running();
                         }
                     }
                     self.refresh_daemon_state();
                 } else if let Err(e) = crate::daemon_client::stop_daemon_service() {
-                    tracing::error!("failed to stop idle-daemon: {e:#}");
+                    idle_log::error!("failed to stop idle-daemon: {e:#}");
                     self.last_error = Some(fl!("error-stop"));
                     self.daemon_running = crate::daemon_client::is_running();
                 } else {
@@ -136,7 +135,7 @@ impl AppModel {
             Message::MiddleClick => {
                 let saver = self.pick_preview_saver(/* random_if_unset */ true);
                 if let Err(e) = crate::daemon_client::preview_saver(&saver) {
-                    tracing::error!("preview failed for '{saver}': {e:#}");
+                    idle_log::error!("preview failed for '{saver}': {e:#}");
                     self.last_error = Some(fl!("error-preview"));
                 } else {
                     self.last_error = None;
@@ -145,7 +144,7 @@ impl AppModel {
             Message::TriggerPreview => {
                 let saver = self.pick_preview_saver(/* random_if_unset */ false);
                 if let Err(e) = crate::daemon_client::preview_saver(&saver) {
-                    tracing::error!("preview failed for '{saver}': {e:#}");
+                    idle_log::error!("preview failed for '{saver}': {e:#}");
                     self.last_error = Some(fl!("error-preview"));
                 } else {
                     self.last_error = None;

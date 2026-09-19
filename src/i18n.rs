@@ -1,50 +1,74 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright 2026 IdleScreen
 
-//! Provides localization support for this crate.
+//! Localization for the applet.
+//!
+//! The applet ships a single `en` Fluent file, so the i18n-embed +
+//! rust-embed + fluent stack collapses to: embed the file with
+//! `include_str!`, parse `key = value` lines once, substitute `{$arg}`
+//! placeholders. The `fl!` macro keeps the same call-site shape as
+//! `i18n_embed_fl::fl!`. Unknown ids render as the id itself, matching
+//! Fluent's fallback behavior.
 
 use std::sync::LazyLock;
 
-use i18n_embed::{
-    DefaultLocalizer, LanguageLoader, Localizer,
-    fluent::{FluentLanguageLoader, fluent_language_loader},
-    unic_langid::LanguageIdentifier,
-};
-use rust_embed::RustEmbed;
+const FTL: &str = include_str!("../i18n/en/idle_applet.ftl");
 
-/// Applies the requested language(s) to requested translations from the `fl!()` macro.
-pub fn init(requested_languages: &[LanguageIdentifier]) {
-    if let Err(why) = localizer().select(requested_languages) {
-        eprintln!("error while loading fluent localizations: {why}");
-    }
-}
-
-// Get the `Localizer` to be used for localizing this library.
-#[must_use]
-pub fn localizer() -> Box<dyn Localizer> {
-    Box::from(DefaultLocalizer::new(&*LANGUAGE_LOADER, &Localizations))
-}
-
-#[derive(RustEmbed)]
-#[folder = "i18n/"]
-struct Localizations;
-
-pub static LANGUAGE_LOADER: LazyLock<FluentLanguageLoader> = LazyLock::new(|| {
-    let loader: FluentLanguageLoader = fluent_language_loader!();
-
-    let _ = loader.load_fallback_language(&Localizations);
-
-    loader
+static TABLE: LazyLock<Vec<(&'static str, &'static str)>> = LazyLock::new(|| {
+    FTL.lines()
+        .filter_map(|line| {
+            let line = line.trim();
+            if line.is_empty() || line.starts_with('#') {
+                return None;
+            }
+            line.split_once('=').map(|(k, v)| (k.trim(), v.trim()))
+        })
+        .collect()
 });
 
-/// Request a localized string by ID from the i18n/ directory.
+/// Look up `id` and substitute `{$name}` placeholders with `args`.
+pub fn message(id: &str, args: &[(&str, String)]) -> String {
+    let Some(tpl) = TABLE.iter().find(|(k, _)| *k == id).map(|(_, v)| *v) else {
+        return id.to_string();
+    };
+    let mut out = tpl.to_string();
+    for (name, value) in args {
+        out = out.replace(&format!("{{${name}}}"), value);
+    }
+    out
+}
+
+/// Request a localized string by ID (i18n_embed_fl `fl!` equivalent).
 #[macro_export]
 macro_rules! fl {
     ($message_id:literal) => {{
-        i18n_embed_fl::fl!($crate::i18n::LANGUAGE_LOADER, $message_id)
+        $crate::i18n::message($message_id, &[])
     }};
+    ($message_id:literal, $($name:ident = $value:expr),+ $(,)?) => {{
+        $crate::i18n::message(
+            $message_id,
+            &[$( (stringify!($name), $value.to_string()), )*],
+        )
+    }};
+}
 
-    ($message_id:literal, $($args:expr),*) => {{
-        i18n_embed_fl::fl!($crate::i18n::LANGUAGE_LOADER, $message_id, $($args), *)
-    }};
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn known_ids_resolve() {
+        assert_eq!(crate::i18n::message("app-title", &[]), "IdleScreen");
+    }
+
+    #[test]
+    fn args_substitute() {
+        assert_eq!(
+            crate::i18n::message("timeout-minutes", &[("mins", "5".to_string())]),
+            "5 min"
+        );
+    }
+
+    #[test]
+    fn unknown_id_renders_id() {
+        assert_eq!(crate::i18n::message("missing-key", &[]), "missing-key");
+    }
 }

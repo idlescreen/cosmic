@@ -7,8 +7,8 @@
 use std::process::Command;
 use std::time::Duration;
 
-use anyhow::{Context, Result, bail};
 use idle_dbus::{DaemonStatus, TranceClient, daemon_available, service};
+use idle_err::{Context, Result, bail};
 
 pub fn is_running() -> bool {
     daemon_available()
@@ -24,7 +24,6 @@ pub fn stop_daemon_service() -> Result<()> {
     service::stop_daemon_service().context("could not stop idle-daemon")
 }
 
-#[tracing::instrument]
 pub fn fetch_status() -> Result<DaemonStatus> {
     let client = TranceClient::connect().context("failed to connect to idle daemon")?;
     client.get_status().context("failed to fetch daemon status")
@@ -62,7 +61,6 @@ pub fn set_show_fps_overlay(enabled: bool) -> Result<()> {
         .context("failed to set FPS overlay")
 }
 
-#[tracing::instrument]
 pub fn list_savers() -> Result<Vec<String>> {
     TranceClient::connect()
         .context("failed to connect to idle daemon")?
@@ -81,12 +79,11 @@ pub fn set_render_scale(scale: f32) -> Result<()> {
 ///
 /// If the daemon is down, try to start it first. As a last resort, run the
 /// packaged `idle-daemon run-plugin <name>` fullscreen helper.
-#[tracing::instrument]
 pub fn preview_saver(name: &str) -> Result<()> {
     if !is_running() {
-        tracing::info!("daemon offline; starting before preview");
+        idle_log::info!("daemon offline; starting before preview");
         if let Err(e) = start_daemon_service() {
-            tracing::warn!("could not start daemon for preview: {e:#}");
+            idle_log::warn!("could not start daemon for preview: {e:#}");
         }
     }
 
@@ -96,7 +93,7 @@ pub fn preview_saver(name: &str) -> Result<()> {
             .and_then(|c| c.preview(name).context("D-Bus preview"))
         {
             Ok(()) => return Ok(()),
-            Err(e) => tracing::warn!("D-Bus preview failed: {e:#}; trying run-plugin fallback"),
+            Err(e) => idle_log::warn!("D-Bus preview failed: {e:#}; trying run-plugin fallback"),
         }
     }
 

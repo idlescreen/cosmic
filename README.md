@@ -11,8 +11,9 @@ for Linux.
 idlescreen install cosmic
 ```
 
-Then add it from COSMIC Settings → Panel → Applets. Status also surfaces
-via `idlescreen cosmic`.
+Then add it from COSMIC Settings → Panel → Applets. (`idlescreen cosmic`
+execs the `idlescreen-applet` binary, which only runs inside
+cosmic-panel — for daemon status from a shell use `idlescreen status`.)
 
 ## License
 
