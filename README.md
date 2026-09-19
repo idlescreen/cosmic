@@ -1,6 +1,6 @@
 # cosmic
 
-[![studio2201 Suite](https://img.shields.io/badge/studio2201-5%2F5%20Verified-2f6f5e?logo=shield)](https://studio2201.com/agents#badges)
+[![studio2201 gate](https://github.com/idlescreen/cosmic/actions/workflows/studio2201.yml/badge.svg)](https://github.com/idlescreen/cosmic/actions/workflows/studio2201.yml)
 
 COSMIC panel applet for the IdleScreen daemon — applet state, quick
 actions, daemon handshake. Part of
