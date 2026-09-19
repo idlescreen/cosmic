@@ -1,6 +1,10 @@
 # cosmic
 
-[![studio2201 gate](https://github.com/idlescreen/cosmic/actions/workflows/studio2201.yml/badge.svg)](https://github.com/idlescreen/cosmic/actions/workflows/studio2201.yml)
+[![snip](https://img.shields.io/github/actions/workflow/status/idlescreen/cosmic/snip.yml?label=snip&logo=shield)](https://github.com/idlescreen/cosmic/actions/workflows/snip.yml)
+[![vigil](https://img.shields.io/github/actions/workflow/status/idlescreen/cosmic/vigil.yml?label=vigil&logo=shield)](https://github.com/idlescreen/cosmic/actions/workflows/vigil.yml)
+[![aegis](https://img.shields.io/github/actions/workflow/status/idlescreen/cosmic/aegis.yml?label=aegis&logo=shield)](https://github.com/idlescreen/cosmic/actions/workflows/aegis.yml)
+[![proven](https://img.shields.io/github/actions/workflow/status/idlescreen/cosmic/proven.yml?label=proven&logo=shield)](https://github.com/idlescreen/cosmic/actions/workflows/proven.yml)
+[![boneyard](https://img.shields.io/github/actions/workflow/status/idlescreen/cosmic/boneyard.yml?label=boneyard&logo=shield)](https://github.com/idlescreen/cosmic/actions/workflows/boneyard.yml)
 
 COSMIC panel applet for the IdleScreen daemon — applet state, quick
 actions, daemon handshake. Part of
