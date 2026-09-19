@@ -1,5 +1,7 @@
 # cosmic
 
+[![studio2201 Suite](https://img.shields.io/badge/studio2201-5%2F5%20Verified-2f6f5e?logo=shield)](https://studio2201.com/agents#badges)
+
 COSMIC panel applet for the IdleScreen daemon — applet state, quick
 actions, daemon handshake. Part of
 [IdleScreen](https://idlescreen.github.io) — modular Wayland screensavers
