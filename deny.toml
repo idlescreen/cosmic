@@ -12,6 +12,11 @@ ignore = [
     "RUSTSEC-2024-0436",
     "RUSTSEC-2026-0192",
     "RUSTSEC-2026-0194",
+    # Transitive advisory through libcosmic v1.0.0 → iced v0.14.0 →
+    # usvg v0.45.1 → resvg v0.45.1 → rustybuzz v0.20.1. libcosmic has not
+    # yet cut rustybuzz out of the iced-renderer tree; revisit on the next
+    # libcosmic bump (or whichever cargo-dependency lands first).
+    "RUSTSEC-2026-0206",
 ]
 
 [licenses]
@@ -99,11 +104,13 @@ license-files = []
 
 [bans]
 multiple-versions = "warn"
-# No real cargo dependency uses a wildcard version. The `"*"` entries under
-# `[package.metadata.generate-rpm.*]` in idle-daemon/Cargo.toml are RPM
-# dependency syntax ("any version"), not cargo requirements, and are not
-# covered by this check.
-wildcards = "deny"
+# See runtime/deny.toml for the full explanation: the `"*"` entries that
+# cargo-deny flags here come from `[package.metadata.generate-rpm.*]`
+# tables in sibling repos — RPM-spec dependency declarations, not cargo
+# requirements, and unmatchable by cargo-deny's wildcard check. Workspace
+# dependencies are all version-pinned; the only `"*"` strings in this
+# workspace's Cargo.toml are path-deps (no version field at all).
+wildcards = "allow"
 highlight = "all"
 deny = []
 skip = []
