@@ -1,3 +1,14 @@
+idle-cosmic (3.2.7-1) unstable; urgency=medium
+
+  * Remove the ineffective IDLE_REQUIRE_MANIFEST_SIGNATURE=1 from the pkexec
+    applet-install path. No package manager reads that variable, so it never
+    gated anything; the path now fails closed unless install.sh has already
+    configured the fingerprint-verified repository, instead of resolving
+    idle-cosmic as root from whatever repository happened to be configured.
+    (Corrects the claim first made in 3.2.0-1.)
+
+ -- IdleScreen Maintainers <maintainers@idlescreen.dev>  Sun, 27 Sep 2026 00:00:00 +0000
+
 idle-cosmic (3.2.6-1) unstable; urgency=medium
 
   * studio2201 security-gate workflow + suite badge in README.
