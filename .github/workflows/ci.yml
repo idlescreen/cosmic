@@ -57,7 +57,14 @@ jobs:
           https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
         echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
         cargo binstall -y cargo-audit
-        cargo audit --ignore RUSTSEC-2026-0253 --ignore RUSTSEC-2026-0186
+        # Transitive advisory through libcosmic v1.0.0 → iced v0.14.0 →
+        # usvg v0.45.1 → resvg v0.45.1 → rustybuzz v0.20.1. libcosmic does
+        # not yet ship a fix; revisit when upstream bumps usvg (or whatever
+        # cuts rustybuzz out of the iced-renderer tree).
+        cargo audit \
+          --ignore RUSTSEC-2026-0253 \
+          --ignore RUSTSEC-2026-0186 \
+          --ignore RUSTSEC-2026-0206
 
     - name: cargo fmt check
       run: cargo fmt --all -- --check
