@@ -3,7 +3,7 @@
 
 //! COSMIC panel applet for IdleScreen screensaver configuration.
 
-mod helpers;
+mod actions;
 mod message;
 mod state;
 mod update;
