@@ -70,6 +70,8 @@ jobs:
           --ignore RUSTSEC-2026-0186 \
           --ignore RUSTSEC-2026-0206
 
+    - name: Validate page-score.json
+      run: qa/page_score_check.sh
     - name: cargo fmt check
       run: cargo fmt --all -- --check
   bootstrap:
