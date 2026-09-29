@@ -1,7 +1,7 @@
 {
  "repo": "cosmic",
- "rev": "035dacb",
- "dirty": true,
+ "rev": "bb827d7",
+ "dirty": false,
  "pages": [
   {
    "path": "./src/app/actions.rs",
