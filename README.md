@@ -44,11 +44,3 @@ cosmic-panel — for daemon status from a shell use `idlescreen status`.)
 ## License
 
 Apache-2.0 · © 2026 IdleScreen
-
----
-
-<div align="center">
-
-[![Necrometer](necrometer.svg)](https://necrometer.dev/?u=idlescreen)
-
-</div>
