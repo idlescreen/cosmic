@@ -2462,7 +2462,7 @@ dependencies = [
 
 [[package]]
 name = "idle-applet"
-version = "3.2.7"
+version = "3.2.9"
 dependencies = [
  "idle-dbus",
  "idle-err",
