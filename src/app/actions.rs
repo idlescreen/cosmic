@@ -27,7 +27,7 @@ impl AppModel {
             return name;
         }
         if self.screensavers.is_empty() {
-            return "beams".to_string();
+            return "ascii".to_string();
         }
         if random_if_unset {
             let idx = std::time::SystemTime::now()
