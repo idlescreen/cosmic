@@ -33,13 +33,18 @@ for Linux.
 
 ## Install
 
+On COSMIC Desktop, the web installer detects your desktop environment and includes the applet automatically:
+
 ```sh
-idlescreen install cosmic
+curl -fsSL https://idlescreen.github.io/install.sh | sh
 ```
 
-Then add it from COSMIC Settings → Panel → Applets. (`idlescreen cosmic`
-execs the `idlescreen-applet` binary, which only runs inside
-cosmic-panel — for daemon status from a shell use `idlescreen status`.)
+Or install the package directly:
+```sh
+sudo dnf install idle-cosmic       # Fedora COSMIC / Pop!_OS
+```
+
+Then add the IdleScreen applet from **COSMIC Settings → Panel → Applets**.
 
 ## License
 
