@@ -1,4 +1,24 @@
-# cosmic
+# cosmic [ARCHIVED / CONSOLIDATED]
+
+> [!WARNING]
+> **Repository Archived & Deprecated**
+>
+> This standalone repository is archived and deprecated. COSMIC Desktop integration has been consolidated directly into the main [IdleScreen mono-repo](https://github.com/idlescreen/idlescreen).
+>
+> - **Autosetup on Install**: The installer (`packages/install.sh`) automatically detects COSMIC Desktop (`DE_ID=cosmic`) and provisions all required integration without manual repository configuration:
+>   ```sh
+>   curl -fsSL https://idlescreen.github.io/install.sh | sh
+>   ```
+> - **Zero Friction Configuration**: Use the unified terminal UI to preview, configure, and manage screensavers, idle timeouts, and display behaviors:
+>   ```sh
+>   idlescreen tui
+>   ```
+> - **CLI Controls**:
+>   ```sh
+>   idlescreen preview ascii    # Interactive terminal preview with tri-rotation
+>   idlescreen set ascii        # Set default screensaver
+>   idlescreen status           # Check daemon & display state
+>   ```
 
 <div align="center">
 
@@ -28,12 +48,12 @@
 
 COSMIC panel applet for the IdleScreen daemon — applet state, quick
 actions, daemon handshake. Part of
-[IdleScreen](https://idlescreen.github.io) — modular Wayland screensavers
+[IdleScreen](https://idlescreen.github.io) — universal Wayland screensavers
 for Linux.
 
 ## Install
 
-On COSMIC Desktop, the web installer detects your desktop environment and includes the applet automatically:
+On COSMIC Desktop, the web installer detects your desktop environment and configures IdleScreen automatically:
 
 ```sh
 curl -fsSL https://idlescreen.github.io/install.sh | sh
@@ -44,7 +64,10 @@ Or install the package directly:
 sudo dnf install idle-cosmic       # Fedora COSMIC / Pop!_OS
 ```
 
-Then add the IdleScreen applet from **COSMIC Settings → Panel → Applets**.
+Configure any screensaver or timeout at any time via:
+```sh
+idlescreen tui
+```
 
 ## License
 
